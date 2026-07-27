@@ -1,0 +1,69 @@
+{
+  "name": "openmeteo-ts",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx --watch src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:unit": "vitest run --dir tests/unit",
+    "test:integration": "vitest run --dir tests/integration",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint src/ tests/",
+    "lint:fix": "eslint --fix src/ tests/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FreeYoshino/openmeteo-ts.git"
+  },
+  "keywords": [
+    "open-meteo",
+    "weather",
+    "api",
+    "sdk",
+    "typescript",
+    "weather-api",
+    "forecast",
+    "zero-dependency"
+  ],
+  "author": "FreeYoshino",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/FreeYoshino/openmeteo-ts/issues"
+  },
+  "homepage": "https://github.com/FreeYoshino/openmeteo-ts#readme",
+  "description": "Zero-dependency, strongly-typed TypeScript SDK for the Open-Meteo Weather API with extensible analyzer plugin system",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.1.1",
+    "eslint": "^10.8.0",
+    "prettier": "^3.9.6",
+    "tsup": "^8.5.1",
+    "tsx": "^4.23.1",
+    "typescript": "5.7",
+    "typescript-eslint": "^8.65.0",
+    "vitest": "^4.1.10"
+  }
+}
