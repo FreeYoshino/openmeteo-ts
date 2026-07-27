@@ -1,9 +1,9 @@
-import js from "@eslint/js";
-import tseslint from "typescript-eslint";
+import js from '@eslint/js'
+import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
   {
-    ignores: ["dist/", "node_modules/", "*.config.*"],
+    ignores: ['dist/', 'node_modules/', '*.config.*'],
   },
 
   // ESLint recommended rules
@@ -16,4 +16,4 @@ export default tseslint.config(
       // TODO: Add custom rules here
     },
   },
-);
+)

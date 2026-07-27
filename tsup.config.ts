@@ -1,21 +1,21 @@
-import { defineConfig } from "tsup";
+import { defineConfig } from 'tsup'
 
 export default defineConfig({
-    entry: ["src/index.ts"],
-    format: ["esm", "cjs"],
-    outDir: "dist",
-    outExtension({ format }) {
-        return {
-            js: format === "esm" ? ".js" : ".cjs",
-        };
-    },
+  entry: ['src/index.ts'],
+  format: ['esm', 'cjs'],
+  outDir: 'dist',
+  outExtension({ format }) {
+    return {
+      js: format === 'esm' ? '.js' : '.cjs',
+    }
+  },
 
-    dts: true,
-    sourcemap: true,
+  dts: true,
+  sourcemap: true,
 
-    target: "es2022",
+  target: 'es2022',
 
-    splitting: false,
-    treeshake: false,
-    clean: true,
-});
+  splitting: false,
+  treeshake: false,
+  clean: true,
+})
