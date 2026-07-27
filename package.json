@@ -50,5 +50,12 @@
         "url": "https://github.com/FreeYoshino/openmeteo-ts/issues"
     },
     "homepage": "https://github.com/FreeYoshino/openmeteo-ts#readme",
-    "description": "Zero-dependency, strongly-typed TypeScript SDK for the Open-Meteo Weather API with extensible analyzer plugin system"
+    "description": "Zero-dependency, strongly-typed TypeScript SDK for the Open-Meteo Weather API with extensible analyzer plugin system",
+    "devDependencies": {
+        "@types/node": "^26.1.1",
+        "tsup": "^8.5.1",
+        "tsx": "^4.23.1",
+        "typescript": "^7.0.2",
+        "vitest": "^4.1.10"
+    }
 }
