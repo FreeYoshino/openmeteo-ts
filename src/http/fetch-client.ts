@@ -14,7 +14,7 @@ export class HttpClient {
    * @param defaultTimeoutMs - The default timeout in milliseconds for requests. Defaults to 10000 ms.
    */
   constructor(baseUrl?: string, defaultTimeoutMs?: number) {
-    this.baseUrl = baseUrl || 'https://api.open-meteo.com/v1'
+    this.baseUrl = baseUrl || 'https://api.open-meteo.com/v1/'
     this.defaultTimeoutMs = defaultTimeoutMs || 10000
   }
 
@@ -29,7 +29,11 @@ export class HttpClient {
    * @throws {WeatherAPIError} If the response status is not in the range 200-299.
    */
   async get<T>(path: string, params?: Record<string, string>): Promise<T> {
-    const url = new URL(path, this.baseUrl)
+    // ensure the baseUrl ends with a slash and the path does not start with a slash to avoid double slashes in the URL
+    const normalizedBaseUrl = this.baseUrl.endsWith('/') ? this.baseUrl : `${this.baseUrl}/`
+    const normalizedPath = path.startsWith('/') ? path.slice(1) : path
+
+    const url = new URL(normalizedPath, normalizedBaseUrl)
     if (params) {
       url.search = new URLSearchParams(params).toString()
     }
