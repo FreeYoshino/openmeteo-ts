@@ -4,7 +4,7 @@ import { WeatherAPIError, WeatherNetworkError } from '../../src/http/errors.js'
 
 describe('HttpClient', () => {
   afterEach(() => {
-    vi.restoreAllMocks()
+    vi.unstubAllGlobals()
   })
 
   it('should return parsed JSON on successful request', async () => {
