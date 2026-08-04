@@ -120,3 +120,32 @@ describe('WeatherMappingError', () => {
     expect(error.cause).toBe(cause)
   })
 })
+
+describe('Error type discrimination', () => {
+  it('should correctly distinguish between different error types', () => {
+    const apiError = new WeatherAPIError(400, 'Bad Request')
+    const networkError = new WeatherNetworkError('Network error')
+    const validationError = new WeatherValidationError('Validation error')
+    const mappingError = new WeatherMappingError('Mapping error')
+
+    // API Error should not be an instance of other error types
+    expect(apiError).not.toBeInstanceOf(WeatherNetworkError)
+    expect(apiError).not.toBeInstanceOf(WeatherValidationError)
+    expect(apiError).not.toBeInstanceOf(WeatherMappingError)
+
+    // Network Error should not be an instance of other error types
+    expect(networkError).not.toBeInstanceOf(WeatherAPIError)
+    expect(networkError).not.toBeInstanceOf(WeatherValidationError)
+    expect(networkError).not.toBeInstanceOf(WeatherMappingError)
+
+    // Validation Error should not be an instance of other error types
+    expect(validationError).not.toBeInstanceOf(WeatherAPIError)
+    expect(validationError).not.toBeInstanceOf(WeatherNetworkError)
+    expect(validationError).not.toBeInstanceOf(WeatherMappingError)
+
+    // Mapping Error should not be an instance of other error types
+    expect(mappingError).not.toBeInstanceOf(WeatherAPIError)
+    expect(mappingError).not.toBeInstanceOf(WeatherNetworkError)
+    expect(mappingError).not.toBeInstanceOf(WeatherValidationError)
+  })
+})
