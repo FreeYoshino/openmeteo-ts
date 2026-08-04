@@ -3,6 +3,10 @@ import { HttpClient } from '../../src/http/fetch-client.js'
 import { WeatherAPIError } from '../../src/http/errors.js'
 
 describe('HttpClient', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it('should return parsed JSON on successful request', async () => {
     const mockData = { latitude: 40.7128, longitude: -74.006 }
 
