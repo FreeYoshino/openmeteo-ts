@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach, vi } from 'vitest'
 import { HttpClient } from '../../src/http/fetch-client.js'
-import { WeatherAPIError } from '../../src/http/errors.js'
+import { WeatherAPIError, WeatherNetworkError } from '../../src/http/errors.js'
 
 describe('HttpClient', () => {
   afterEach(() => {
@@ -62,6 +62,32 @@ describe('HttpClient', () => {
     await expect(client.get('/forecast')).rejects.toMatchObject({
       statusCode: 500,
       reason: 'Internal Server Error',
+    })
+  })
+
+  it('should throw WeatherNetworkError on network failure', async () => {
+    const causeError = new TypeError('fetch failed')
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(causeError))
+
+    const client = new HttpClient()
+
+    await expect(client.get('/forecast')).rejects.toThrow(WeatherNetworkError)
+    await expect(client.get('/forecast')).rejects.toMatchObject({
+      message: 'Network request failed',
+      cause: causeError,
+    })
+  })
+
+  it('should throw WeatherNetworkError on timeout', async () => {
+    const causeError = new DOMException('The operation was aborted.', 'TimeoutError')
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(causeError))
+
+    const client = new HttpClient()
+
+    await expect(client.get('/forecast')).rejects.toThrow(WeatherNetworkError)
+    await expect(client.get('/forecast')).rejects.toMatchObject({
+      message: 'Request timed out after 10000 ms',
+      cause: causeError,
     })
   })
 })
