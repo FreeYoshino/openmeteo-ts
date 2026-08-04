@@ -76,3 +76,25 @@ describe('WeatherNetworkError', () => {
     expect(error.cause).toBe(cause)
   })
 })
+
+describe('WeatherValidationError', () => {
+  it('should extend WeatherError and maintain its own prototype', () => {
+    const error = new WeatherValidationError('Validation error')
+    expect(error).toBeInstanceOf(Error)
+    expect(error).toBeInstanceOf(WeatherError)
+    expect(error).toBeInstanceOf(WeatherValidationError)
+  })
+  it('should have the correct name', () => {
+    const error = new WeatherValidationError('Validation error')
+    expect(error.name).toBe('WeatherValidationError')
+  })
+  it('should have the correct message', () => {
+    const error = new WeatherValidationError('Validation error')
+    expect(error.message).toBe('Validation error')
+  })
+  it('should support the cause option', () => {
+    const cause = new Error('Cause error')
+    const error = new WeatherValidationError('Validation error', { cause })
+    expect(error.cause).toBe(cause)
+  })
+})
