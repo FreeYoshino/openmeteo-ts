@@ -27,3 +27,30 @@ describe('WeatherError', () => {
     expect(error.cause).toBe(cause)
   })
 })
+
+describe('WeatherAPIError', () => {
+  it('should extend WeatherError and maintain its own prototype', () => {
+    const error = new WeatherAPIError(400, 'Bad Request')
+    expect(error).toBeInstanceOf(Error)
+    expect(error).toBeInstanceOf(WeatherError)
+    expect(error).toBeInstanceOf(WeatherAPIError)
+  })
+  it('should have the correct name', () => {
+    const error = new WeatherAPIError(400, 'Bad Request')
+    expect(error.name).toBe('WeatherAPIError')
+  })
+  it('should have the correct statusCode and reason', () => {
+    const error = new WeatherAPIError(400, 'Bad Request')
+    expect(error.statusCode).toBe(400)
+    expect(error.reason).toBe('Bad Request')
+  })
+  it('should format the message correctly', () => {
+    const error = new WeatherAPIError(400, 'Bad Request')
+    expect(error.message).toBe('API Error 400: Bad Request')
+  })
+  it('should support the cause option', () => {
+    const cause = new Error('Cause error')
+    const error = new WeatherAPIError(400, 'Bad Request', { cause })
+    expect(error.cause).toBe(cause)
+  })
+})
