@@ -92,4 +92,65 @@ describe('HttpClient', () => {
       })
     })
   })
+
+  describe('constructor', () => {
+    it('should use default baseUrl when not provided', async () => {
+      const fetchMock = vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({}),
+      })
+      vi.stubGlobal('fetch', fetchMock)
+
+      const client = new HttpClient()
+      await client.get('/forecast')
+
+      const calledUrl = fetchMock.mock.calls[0][0]
+      expect(calledUrl).toBe('https://api.open-meteo.com/v1/forecast')
+    })
+
+    it('should use provided baseUrl', async () => {
+      const fetchMock = vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({}),
+      })
+      vi.stubGlobal('fetch', fetchMock)
+
+      const client = new HttpClient('https://custom-api.com/')
+      await client.get('/forecast')
+
+      const calledUrl = fetchMock.mock.calls[0][0]
+      expect(calledUrl).toBe('https://custom-api.com/forecast')
+    })
+
+    it('should append query parameters correctly', async () => {
+      const fetchMock = vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({}),
+      })
+      vi.stubGlobal('fetch', fetchMock)
+
+      const client = new HttpClient()
+      await client.get('/forecast', { latitude: '40.7128', longitude: '-74.006' })
+
+      const calledUrl = fetchMock.mock.calls[0][0]
+      expect(calledUrl).toContain('https://api.open-meteo.com/v1/forecast?')
+      expect(calledUrl).toContain('latitude=40.7128')
+      expect(calledUrl).toContain('longitude=-74.006')
+    })
+
+    it('should not append query parameters when none are provided', async () => {
+      const fetchMock = vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({}),
+      })
+      vi.stubGlobal('fetch', fetchMock)
+
+      const client = new HttpClient()
+      await client.get('/forecast')
+
+      const calledUrl = fetchMock.mock.calls[0][0]
+      expect(calledUrl).toBe('https://api.open-meteo.com/v1/forecast')
+      expect(calledUrl).not.toContain('?')
+    })
+  })
 })
