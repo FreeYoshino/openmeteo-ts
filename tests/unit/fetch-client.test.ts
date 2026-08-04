@@ -24,7 +24,7 @@ describe('HttpClient', () => {
     expect(result).toEqual(mockData)
   })
 
-  it('shoult throw WeatherAPIError with body.reason when response has error body', async () => {
+  it('should throw WeatherAPIError with body.reason when response has error body', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
