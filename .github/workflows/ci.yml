@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Pull the code from the repository
-      - uses: actions/chekcout@v4
+      - uses: actions/checkcout@v4
 
       # Set up Node.js environment
       - uses: actions/setup-node@v4
