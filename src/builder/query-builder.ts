@@ -5,7 +5,7 @@ import {
   Minutely15WeatherVariables,
 } from '../types/variables.js'
 
-import { TemperatureUnit, WindSpeedUnit, PrecipitationUnit } from '../types/query.js'
+import { TemperatureUnit, WindSpeedUnit, PrecipitationUnit, Timeformat } from '../types/query.js'
 
 /**
  * Fluent builder for constructing type-safe Open-Meteo API query parameters.
@@ -147,6 +147,30 @@ export class QueryBuilder {
    */
   precipitation_unit(v: PrecipitationUnit): this {
     this.params.set('precipitation_unit', v)
+    return this
+  }
+
+  /**
+   * Sets the time format parameter.
+   *
+   * By default, the API returns timestamps in ISO 8601 format.
+   *
+   * @param v - The time format to use.
+   * @returns The current QueryBuilder instance.
+   */
+  timeFormat(v: Timeformat): this {
+    this.params.set('time_format', v)
+    return this
+  }
+
+  /**
+   * Sets the timezone parameter.
+   *
+   * @param v - The timezone to use.
+   * @returns The current QueryBuilder instance.
+   */
+  timezone(v: string | 'auto'): this {
+    this.params.set('timezone', v)
     return this
   }
 }
