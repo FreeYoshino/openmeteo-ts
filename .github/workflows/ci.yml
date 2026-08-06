@@ -54,3 +54,25 @@ jobs:
 
       - run: npm ci
       - run: npm run format -- --check
+
+  test:
+    name: Test (Node ${{ matrix.node-version}})
+    runs-on: ubuntu-latest
+
+    # Run tests on multiple Node.js versions using a matrix strategy
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+
+    steps:
+      # Pull the code from the repository
+      - uses: actions/checkout@v4
+
+      # Set up Node.js environment
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm test
