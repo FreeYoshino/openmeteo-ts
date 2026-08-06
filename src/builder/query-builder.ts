@@ -1,3 +1,10 @@
+import {
+  HourlyWeatherVariables,
+  DailyWeatherVariables,
+  CurrentWeatherVariables,
+  Minutely15WeatherVariables,
+} from '../types/variables.js'
+
 /**
  * Fluent builder for constructing type-safe Open-Meteo API query parameters.
  *
@@ -57,6 +64,54 @@ export class QueryBuilder {
    */
   elevations(v: number | number[] | 'nan'): this {
     this.params.set('elevation', Array.isArray(v) ? v.join(',') : v.toString())
+    return this
+  }
+
+  /**
+   * Sets the hourly weather variables parameter.
+   *
+   * @param v - An array of HourlyWeatherVariables to include in the query.
+   *            (e.g., ['temperature_2m', 'precipitation']).
+   * @returns The current QueryBuilder instance.
+   */
+  hourly(v: HourlyWeatherVariables[]): this {
+    this.params.set('hourly', v.join(','))
+    return this
+  }
+
+  /**
+   * Sets the daily weather variables parameter.
+   *
+   * @param v - An array of DailyWeatherVariables to include in the query.
+   *            (e.g., ['temperature_2m_max', 'precipitation_sum']).
+   * @returns The current QueryBuilder instance.
+   */
+  daily(v: DailyWeatherVariables[]): this {
+    this.params.set('daily', v.join(','))
+    return this
+  }
+
+  /**
+   * Sets the current weather variables parameter.
+   *
+   * @param v - An array of CurrentWeatherVariables to include in the query.
+   *           (e.g., ['temperature_2m', 'relative_humidity_2m']).
+   * @returns The current QueryBuilder instance.
+   */
+  current(v: CurrentWeatherVariables[]): this {
+    this.params.set('current', v.join(','))
+    return this
+  }
+
+  /**
+   * Sets the minutely 15 weather variables parameter.
+   *
+   * @param v - An array of Minutely15WeatherVariables to include in the query.
+   *            (e.g., ['temperature_2m', 'relative_humidity_2m']).
+   * @returns The current QueryBuilder instance.
+   */
+  minutely_15(v: Minutely15WeatherVariables[]): this {
+    this.params.set('minutely_15', v.join(','))
     return this
   }
 }
