@@ -14,6 +14,8 @@ import {
   WeatherModel,
 } from '../types/query.js'
 
+import { WeatherValidationError } from '../http/errors.js'
+
 /**
  * Fluent builder for constructing type-safe Open-Meteo API query parameters.
  *
@@ -214,7 +216,7 @@ export class QueryBuilder {
    * Sets the forecast days parameter.
    *
    * This parameter allows you to retrieve forecast weather data for a specified number of future days.
-   * Must be between 1 and 16 (validated at build time).
+   * Must be between 0 and 16 (validated at build time).
    * By default, a value of 7 is used, which means the API will return forecast data for the next 7 days.
    *
    * @param v - The number of forecast days to include in the query.
@@ -333,5 +335,99 @@ export class QueryBuilder {
   models(v: WeatherModel | WeatherModel[]): this {
     this.params.set('models', Array.isArray(v) ? v.join(',') : v.toString())
     return this
+  }
+
+  /**
+   * Builds the query parameters into a plain object.
+   *
+   * @returns The built query parameters as a plain object.
+   */
+  build(): Record<string, string> {
+    // Validate required parameters and ranges before returning the final query object
+    this.validateRequiredParams()
+    this.validateRanges()
+    this.validateDateFormats()
+
+    return Object.fromEntries(this.params)
+  }
+
+  /**
+   * Validates that the required parameters (latitude and longitude) are present in the query.
+   *
+   * @throws {WeatherValidationError} If either latitude or longitude is missing.
+   */
+  private validateRequiredParams(): void {
+    if (!this.params.has('latitude')) {
+      throw new WeatherValidationError('Missing required parameter: latitude')
+    }
+    if (!this.params.has('longitude')) {
+      throw new WeatherValidationError('Missing required parameter: longitude')
+    }
+  }
+
+  /** Validates numeric parameter ranges. */
+  private validateRanges(): void {
+    this.checkNumberRange('latitude', -90, 90)
+    this.checkNumberRange('longitude', -180, 180)
+    this.checkNumberRange('past_days', 0, 92)
+    this.checkNumberRange('forecast_days', 0, 16)
+    this.checkNumberRange('past_hours', 0, Number.MAX_SAFE_INTEGER)
+    this.checkNumberRange('forecast_hours', 0, Number.MAX_SAFE_INTEGER)
+  }
+
+  /** Validates start_date and end_date are in YYYY-MM-DD format. */
+  private validateDateFormats(): void {
+    this.checkDateFormat('start_date')
+    this.checkDateFormat('end_date')
+  }
+
+  /**
+   * Helpers to check if a numeric parameter is within a specified range.
+   *
+   * @param paramName - The name of the parameter to check.
+   * @param min  - The minimum valid value for the parameter.
+   * @param max  - The maximum valid value for the parameter.
+   *
+   * @throws {WeatherValidationError} If the parameter value is out of range.
+   */
+  private checkNumberRange(paramName: string, min: number, max: number): void {
+    const valueStr = this.params.get(paramName)
+    if (!valueStr) return
+
+    if (!valueStr.includes(',')) {
+      const value = parseFloat(valueStr)
+      if (isNaN(value) || value < min || value > max) {
+        throw new WeatherValidationError(
+          `Invalid ${paramName} value: ${valueStr}. Must be between ${min} and ${max}.`,
+        )
+      }
+    } else {
+      const values = valueStr.split(',').map((v) => parseFloat(v))
+      for (const value of values) {
+        if (isNaN(value) || value < min || value > max) {
+          throw new WeatherValidationError(
+            `Invalid ${paramName} value: ${value}. Must be between ${min} and ${max}.`,
+          )
+        }
+      }
+    }
+  }
+
+  /**
+   * Helpers to check if a date parameter is in the correct format (YYYY-MM-DD).
+   *
+   * @param paramName - The name of the date parameter to check.
+   * @throws {WeatherValidationError} If the date parameter is not in the correct format.
+   */
+  private checkDateFormat(paramName: string): void {
+    const dateStr = this.params.get(paramName)
+    if (!dateStr) return
+
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+    if (!dateRegex.test(dateStr)) {
+      throw new WeatherValidationError(
+        `Invalid ${paramName} value: ${dateStr}. Must be in the format 'YYYY-MM-DD'.`,
+      )
+    }
   }
 }
