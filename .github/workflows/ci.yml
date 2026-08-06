@@ -56,7 +56,7 @@ jobs:
       - run: npm run format:check
 
   test:
-    name: Test (Node ${{ matrix.node-version}})
+    name: Test (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
 
     # Run tests on multiple Node.js versions using a matrix strategy
