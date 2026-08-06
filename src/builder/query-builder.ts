@@ -307,4 +307,17 @@ export class QueryBuilder {
     this.params.set('cell_selection', v)
     return this
   }
+
+  /**
+   * Sets the API key parameter.
+   *
+   * This parameter only required for commercial subscriptions.
+   *
+   * @param v - The API key to use.
+   * @returns The current QueryBuilder instance.
+   */
+  apiKey(v: string): this {
+    this.params.set('apikey', v)
+    return this
+  }
 }
