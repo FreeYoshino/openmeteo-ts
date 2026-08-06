@@ -112,7 +112,7 @@ export class QueryBuilder {
    *            (e.g., ['temperature_2m', 'relative_humidity_2m']).
    * @returns The current QueryBuilder instance.
    */
-  minutely_15(v: Minutely15WeatherVariables[]): this {
+  minutely15(v: Minutely15WeatherVariables[]): this {
     this.params.set('minutely_15', v.join(','))
     return this
   }
@@ -123,7 +123,7 @@ export class QueryBuilder {
    * @param v - The temperature unit to use.
    * @returns The current QueryBuilder instance.
    */
-  temperature_unit(v: TemperatureUnit): this {
+  temperatureUnit(v: TemperatureUnit): this {
     this.params.set('temperature_unit', v)
     return this
   }
@@ -134,7 +134,7 @@ export class QueryBuilder {
    * @param v - The wind speed unit to use.
    * @returns The current QueryBuilder instance.
    */
-  wind_speed_unit(v: WindSpeedUnit): this {
+  wind_speedUnit(v: WindSpeedUnit): this {
     this.params.set('wind_speed_unit', v)
     return this
   }
@@ -145,7 +145,7 @@ export class QueryBuilder {
    * @param v - The precipitation unit to use.
    * @returns The current QueryBuilder instance.
    */
-  precipitation_unit(v: PrecipitationUnit): this {
+  precipitationUnit(v: PrecipitationUnit): this {
     this.params.set('precipitation_unit', v)
     return this
   }
