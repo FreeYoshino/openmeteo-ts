@@ -231,4 +231,32 @@ export class QueryBuilder {
     this.params.set('forecast_hours', v.toString())
     return this
   }
+
+  /**
+   * Sets the start date parameter.
+   *
+   * This parameter allows you to specify the start date for the query.
+   * Must be in the format 'YYYY-MM-DD' (validated at build time).
+   *
+   * @param v - The start date to use.
+   * @returns The current QueryBuilder instance.
+   */
+  startDate(v: string): this {
+    this.params.set('start_date', v)
+    return this
+  }
+
+  /**
+   * Sets the end date parameter.
+   *
+   * This parameter allows you to specify the end date for the query.
+   * Must be in the format 'YYYY-MM-DD' (validated at build time).
+   *
+   * @param v - The end date to use.
+   * @returns The current QueryBuilder instance.
+   */
+  endDate(v: string): this {
+    this.params.set('end_date', v)
+    return this
+  }
 }
