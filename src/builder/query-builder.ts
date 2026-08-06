@@ -202,4 +202,33 @@ export class QueryBuilder {
     this.params.set('past_hours', v.toString())
     return this
   }
+
+  /**
+   * Sets the forecast days parameter.
+   *
+   * This parameter allows you to retrieve forecast weather data for a specified number of future days.
+   * Must be between 1 and 16 (validated at build time).
+   * By default, a value of 7 is used, which means the API will return forecast data for the next 7 days.
+   *
+   * @param v - The number of forecast days to include in the query.
+   * @returns The current QueryBuilder instance.
+   */
+  forecastDays(v: number): this {
+    this.params.set('forecast_days', v.toString())
+    return this
+  }
+
+  /**
+   * Sets the forecast hours parameter.
+   *
+   * This parameter allows you to retrieve forecast weather data for a specified number of future hours.
+   * Must be greater than 0 (validated at build time).
+   *
+   * @param v - The number of forecast hours to include in the query.
+   * @returns The current QueryBuilder instance.
+   */
+  forecastHours(v: number): this {
+    this.params.set('forecast_hours', v.toString())
+    return this
+  }
 }
