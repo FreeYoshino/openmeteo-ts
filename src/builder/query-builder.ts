@@ -173,4 +173,33 @@ export class QueryBuilder {
     this.params.set('timezone', v)
     return this
   }
+
+  /**
+   * Sets the past days parameter.
+   *
+   * This parameter allows you to retrieve historical weather data for a specified number of past days.
+   * By default, a value of 0 is used, which means no historical data will be included in the response.
+   * Must be between 0 and 92 (validated at build time).
+   *
+   * @param v - The number of past days to include in the query.
+   * @returns The current QueryBuilder instance.
+   */
+  pastDays(v: number): this {
+    this.params.set('past_days', v.toString())
+    return this
+  }
+
+  /**
+   * Sets the past hours parameter.
+   *
+   * This parameter allows you to retrieve historical weather data for a specified number of past hours.
+   * Must be greater than 0 (validated at build time).
+   *
+   * @param v - The number of past hours to include in the query.
+   * @returns The current QueryBuilder instance.
+   */
+  pastHours(v: number): this {
+    this.params.set('past_hours', v.toString())
+    return this
+  }
 }
