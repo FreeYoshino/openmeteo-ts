@@ -159,7 +159,7 @@ export class QueryBuilder {
    * @returns The current QueryBuilder instance.
    */
   timeFormat(v: Timeformat): this {
-    this.params.set('time_format', v)
+    this.params.set('timeformat', v)
     return this
   }
 
