@@ -134,7 +134,7 @@ export class QueryBuilder {
    * @param v - The wind speed unit to use.
    * @returns The current QueryBuilder instance.
    */
-  wind_speedUnit(v: WindSpeedUnit): this {
+  windSpeedUnit(v: WindSpeedUnit): this {
     this.params.set('wind_speed_unit', v)
     return this
   }
