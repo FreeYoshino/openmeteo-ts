@@ -5,7 +5,13 @@ import {
   Minutely15WeatherVariables,
 } from '../types/variables.js'
 
-import { TemperatureUnit, WindSpeedUnit, PrecipitationUnit, Timeformat } from '../types/query.js'
+import {
+  TemperatureUnit,
+  WindSpeedUnit,
+  PrecipitationUnit,
+  Timeformat,
+  CellSelection,
+} from '../types/query.js'
 
 /**
  * Fluent builder for constructing type-safe Open-Meteo API query parameters.
@@ -286,6 +292,19 @@ export class QueryBuilder {
    */
   azimuth(v: number): this {
     this.params.set('azimuth', v.toString())
+    return this
+  }
+
+  /**
+   * Sets the cell selection parameter.
+   *
+   * This parameter allows you to specify which cells to include in the query.
+   *
+   * @param v - The cell selection to use.
+   * @returns The current QueryBuilder instance.
+   */
+  cellSelection(v: CellSelection): this {
+    this.params.set('cell_selection', v)
     return this
   }
 }
