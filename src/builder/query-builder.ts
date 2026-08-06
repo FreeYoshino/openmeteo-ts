@@ -25,7 +25,7 @@ export class QueryBuilder {
   /**
    * Sets the latitude parameter.
    *
-   * Must be between -90 and 90(validted at build time).
+   * Must be between -90 and 90(validated at build time).
    * Accepts a single value or array for multi-location queries.
    *
    * @param v - WGS84 latitude in decimal degrees.
@@ -38,7 +38,7 @@ export class QueryBuilder {
   /**
    * Sets the longitude parameter.
    *
-   * Must be between -180 and 180(validted at build time).
+   * Must be between -180 and 180(validated at build time).
    * Accepts a single value or array for multi-location queries.
    *
    * @param v - WGS84 longitude in decimal degrees.
