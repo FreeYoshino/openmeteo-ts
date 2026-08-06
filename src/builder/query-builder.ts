@@ -5,6 +5,8 @@ import {
   Minutely15WeatherVariables,
 } from '../types/variables.js'
 
+import { TemperatureUnit, WindSpeedUnit, PrecipitationUnit } from '../types/query.js'
+
 /**
  * Fluent builder for constructing type-safe Open-Meteo API query parameters.
  *
@@ -112,6 +114,39 @@ export class QueryBuilder {
    */
   minutely_15(v: Minutely15WeatherVariables[]): this {
     this.params.set('minutely_15', v.join(','))
+    return this
+  }
+
+  /**
+   * Sets the temperature unit parameter.
+   *
+   * @param v - The temperature unit to use.
+   * @returns The current QueryBuilder instance.
+   */
+  temperature_unit(v: TemperatureUnit): this {
+    this.params.set('temperature_unit', v)
+    return this
+  }
+
+  /**
+   * Sets the wind speed unit parameter.
+   *
+   * @param v - The wind speed unit to use.
+   * @returns The current QueryBuilder instance.
+   */
+  wind_speed_unit(v: WindSpeedUnit): this {
+    this.params.set('wind_speed_unit', v)
+    return this
+  }
+
+  /**
+   * Sets the precipitation unit parameter.
+   *
+   * @param v - The precipitation unit to use.
+   * @returns The current QueryBuilder instance.
+   */
+  precipitation_unit(v: PrecipitationUnit): this {
+    this.params.set('precipitation_unit', v)
     return this
   }
 }
