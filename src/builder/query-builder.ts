@@ -11,6 +11,7 @@ import {
   PrecipitationUnit,
   Timeformat,
   CellSelection,
+  WeatherModel,
 } from '../types/query.js'
 
 /**
@@ -318,6 +319,19 @@ export class QueryBuilder {
    */
   apiKey(v: string): this {
     this.params.set('apikey', v)
+    return this
+  }
+
+  /**
+   * Sets the weather model parameter.
+   *
+   * This parameter allows you to specify which weather model(s) to use for the query.
+   *
+   * @param v - The weather model(s) to use.
+   * @returns The current QueryBuilder instance.
+   */
+  models(v: WeatherModel | WeatherModel[]): this {
+    this.params.set('models', Array.isArray(v) ? v.join(',') : v.toString())
     return this
   }
 }
