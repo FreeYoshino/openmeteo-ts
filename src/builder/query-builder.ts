@@ -34,7 +34,7 @@ export class QueryBuilder {
   /**
    * Sets the latitude parameter.
    *
-   * Must be between -90 and 90(validated at build time).
+   * Must be between -90 and 90 (validated at build time).
    * Accepts a single value or array for multi-location queries.
    *
    * @param v - WGS84 latitude in decimal degrees.
@@ -47,7 +47,7 @@ export class QueryBuilder {
   /**
    * Sets the longitude parameter.
    *
-   * Must be between -180 and 180(validated at build time).
+   * Must be between -180 and 180 (validated at build time).
    * Accepts a single value or array for multi-location queries.
    *
    * @param v - WGS84 longitude in decimal degrees.
@@ -63,7 +63,7 @@ export class QueryBuilder {
    * Sets the elevation parameter.
    *
    * By default, a 90-meter digital elevation model (DEM) is used.
-   * This parameter allows you to correctly match weather data to specific mountain peaksor actual site altitudes.
+   * This parameter allows you to correctly match weather data to specific mountain peaks or actual site altitudes.
    *
    * @param v - Elevation in meters above sea level.
    *    - `number`: Elevation for a single location.
@@ -268,12 +268,12 @@ export class QueryBuilder {
   }
 
   /**
-   * Sets the tilt angle for global_tilted_irradiance(GTI) calculations.
+   * Sets the tilt angle for global_tilted_irradiance (GTI) calculations.
    *
    * Represents the angle of the solar panel relative to horizontal ground.
    * By default, a value of 0 is used, which means the panel is lying flat.
    *
-   * @param v - The tilt angle in degrees to use .
+   * @param v - The tilt angle in degrees to use.
    * @returns The current QueryBuilder instance.
    */
   tilt(v: number): this {
@@ -282,7 +282,7 @@ export class QueryBuilder {
   }
 
   /**
-   * Sets the azimuth angle for global_tilted_irradiance(GTI) calculations.
+   * Sets the azimuth angle for global_tilted_irradiance (GTI) calculations.
    *
    * Represents the compass direction the solar panel faces:
    * - North=0, East=90, South=180, West=270.
