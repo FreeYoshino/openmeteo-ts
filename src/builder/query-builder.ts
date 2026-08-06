@@ -259,4 +259,33 @@ export class QueryBuilder {
     this.params.set('end_date', v)
     return this
   }
+
+  /**
+   * Sets the tilt angle for global_tilted_irradiance(GTI) calculations.
+   *
+   * Represents the angle of the solar panel relative to horizontal ground.
+   * By default, a value of 0 is used, which means the panel is lying flat.
+   *
+   * @param v - The tilt angle in degrees to use .
+   * @returns The current QueryBuilder instance.
+   */
+  tilt(v: number): this {
+    this.params.set('tilt', v.toString())
+    return this
+  }
+
+  /**
+   * Sets the azimuth angle for global_tilted_irradiance(GTI) calculations.
+   *
+   * Represents the compass direction the solar panel faces:
+   * - North=0, East=90, South=180, West=270.
+   * By default, a value of 0(North) is used.
+   *
+   * @param v - The azimuth angle in degrees to use.
+   * @returns The current QueryBuilder instance.
+   */
+  azimuth(v: number): this {
+    this.params.set('azimuth', v.toString())
+    return this
+  }
 }
