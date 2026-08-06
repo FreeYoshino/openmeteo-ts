@@ -54,7 +54,7 @@ export class QueryBuilder {
    * Sets the elevation parameter.
    *
    * By default, a 90-meter digital elevation model (DEM) is used.
-   * this parameter allows you to correctly match weather data to specific mountain peaksor actual site altitudes.
+   * This parameter allows you to correctly match weather data to specific mountain peaksor actual site altitudes.
    *
    * @param v - Elevation in meters above sea level.
    *    - `number`: Elevation for a single location.
@@ -62,7 +62,7 @@ export class QueryBuilder {
    *    - `'nan'`: Disables downscaling and uses the average grid-cell height from the model.
    * @returns The current QueryBuilder instance.
    */
-  elevations(v: number | number[] | 'nan'): this {
+  elevation(v: number | number[] | 'nan'): this {
     this.params.set('elevation', Array.isArray(v) ? v.join(',') : v.toString())
     return this
   }
