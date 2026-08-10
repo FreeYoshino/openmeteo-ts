@@ -279,4 +279,18 @@ describe('QueryBuilder', () => {
       })
     })
   })
+
+  describe('build() validation', () => {
+    describe('required parameters', () => {
+      it('should throw when latitude is not set', () => {
+        const builder = new QueryBuilder()
+        expect(() => builder.longitude(0).build()).toThrow('Missing required parameter: latitude')
+      })
+
+      it('should throw when longitude is not set', () => {
+        const builder = new QueryBuilder()
+        expect(() => builder.latitude(0).build()).toThrow('Missing required parameter: longitude')
+      })
+    })
+  })
 })
