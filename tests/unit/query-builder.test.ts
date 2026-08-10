@@ -172,5 +172,37 @@ describe('QueryBuilder', () => {
         expect(result.models).toBe('best_match,cmc_gem_gdps')
       })
     })
+
+    describe('string parameters', () => {
+      it('should set timezone', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).timezone('America/New_York').build()
+        expect(result.timezone).toBe('America/New_York')
+      })
+
+      it('should set timezone to "auto"', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).timezone('auto').build()
+        expect(result.timezone).toBe('auto')
+      })
+
+      it('should set start date', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).startDate('2026-08-10').build()
+        expect(result.start_date).toBe('2026-08-10')
+      })
+
+      it('should set end date', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).endDate('2026-08-10').build()
+        expect(result.end_date).toBe('2026-08-10')
+      })
+
+      it('should set api key', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).apiKey('my-api-key').build()
+        expect(result.apikey).toBe('my-api-key')
+      })
+    })
   })
 })
