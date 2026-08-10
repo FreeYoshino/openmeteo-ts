@@ -37,4 +37,42 @@ describe('QueryBuilder', () => {
       expect(result.longitude).toBe('-74.006,-118.2437')
     })
   })
+
+  describe('weather variable parameters', () => {
+    it('should join multiple hourly weather variables with a comma', () => {
+      const builder = new QueryBuilder()
+      const result = builder
+        .latitude(0)
+        .longitude(0)
+        .hourly(['temperature_2m', 'relative_humidity_2m'])
+        .build()
+      expect(result.hourly).toBe('temperature_2m,relative_humidity_2m')
+    })
+
+    it('should join multiple daily weather variables with a comma', () => {
+      const builder = new QueryBuilder()
+      const result = builder
+        .latitude(0)
+        .longitude(0)
+        .daily(['temperature_2m_max', 'temperature_2m_min'])
+        .build()
+      expect(result.daily).toBe('temperature_2m_max,temperature_2m_min')
+    })
+
+    it('should join multiple current weather variables with a comma', () => {
+      const builder = new QueryBuilder()
+      const result = builder
+        .latitude(0)
+        .longitude(0)
+        .current(['apparent_temperature', 'cloud_cover'])
+        .build()
+      expect(result.current).toBe('apparent_temperature,cloud_cover')
+    })
+
+    it('should join multiple minutely15 weather variables with a comma', () => {
+      const builder = new QueryBuilder()
+      const result = builder.latitude(0).longitude(0).minutely15(['precipitation', 'cape']).build()
+      expect(result.minutely_15).toBe('precipitation,cape')
+    })
+  })
 })
