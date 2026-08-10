@@ -98,5 +98,43 @@ describe('QueryBuilder', () => {
         expect(result.precipitation_unit).toBe('inch')
       })
     })
+
+    describe('numeric parameters', () => {
+      it('should set past days', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).pastDays(5).build()
+        expect(result.past_days).toBe('5')
+      })
+
+      it('should set past hours', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).pastHours(12).build()
+        expect(result.past_hours).toBe('12')
+      })
+
+      it('should set forecast days', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).forecastDays(7).build()
+        expect(result.forecast_days).toBe('7')
+      })
+
+      it('should set forecast hours', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).forecastHours(24).build()
+        expect(result.forecast_hours).toBe('24')
+      })
+
+      it('should set tilt', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).tilt(30).build()
+        expect(result.tilt).toBe('30')
+      })
+
+      it('should set azimuth', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).azimuth(180).build()
+        expect(result.azimuth).toBe('180')
+      })
+    })
   })
 })
