@@ -75,4 +75,24 @@ describe('QueryBuilder', () => {
       expect(result.minutely_15).toBe('precipitation,cape')
     })
   })
+
+  describe('unit parameters', () => {
+    it('should set temperature unit', () => {
+      const builder = new QueryBuilder()
+      const result = builder.latitude(0).longitude(0).temperatureUnit('fahrenheit').build()
+      expect(result.temperature_unit).toBe('fahrenheit')
+    })
+
+    it('should set wind speed unit', () => {
+      const builder = new QueryBuilder()
+      const result = builder.latitude(0).longitude(0).windSpeedUnit('mph').build()
+      expect(result.wind_speed_unit).toBe('mph')
+    })
+
+    it('should set precipitation unit', () => {
+      const builder = new QueryBuilder()
+      const result = builder.latitude(0).longitude(0).precipitationUnit('inch').build()
+      expect(result.precipitation_unit).toBe('inch')
+    })
+  })
 })
