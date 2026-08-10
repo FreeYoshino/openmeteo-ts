@@ -343,6 +343,34 @@ describe('QueryBuilder', () => {
             WeatherValidationError,
           )
         })
+
+        it('should throw when a value in the latitude array is out of range(>90)', () => {
+          const builder = new QueryBuilder()
+          expect(() => builder.latitude([0, 91]).longitude(0).build()).toThrow(
+            WeatherValidationError,
+          )
+        })
+
+        it('should throw when a value in the latitude array is out of range(<-90)', () => {
+          const builder = new QueryBuilder()
+          expect(() => builder.latitude([0, -91]).longitude(0).build()).toThrow(
+            WeatherValidationError,
+          )
+        })
+
+        it('should throw when a value in the longitude array is out of range(>180)', () => {
+          const builder = new QueryBuilder()
+          expect(() => builder.latitude(0).longitude([0, 181]).build()).toThrow(
+            WeatherValidationError,
+          )
+        })
+
+        it('should throw when a value in the longitude array is out of range(<-180)', () => {
+          const builder = new QueryBuilder()
+          expect(() => builder.latitude(0).longitude([0, -181]).build()).toThrow(
+            WeatherValidationError,
+          )
+        })
       })
 
       describe('pastDays, pastHours, forecastDays, forecastHours range validation', () => {
