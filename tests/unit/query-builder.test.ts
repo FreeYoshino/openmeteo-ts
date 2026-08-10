@@ -357,5 +357,35 @@ describe('QueryBuilder', () => {
         )
       })
     })
+
+    describe('date format validation', () => {
+      it('should throw when startDate is not in YYYY-MM-DD format', () => {
+        const builder = new QueryBuilder()
+        expect(() => builder.latitude(0).longitude(0).startDate('08-10-2026').build()).toThrow(
+          WeatherValidationError,
+        )
+      })
+
+      it('should not throw when startDate is in YYYY-MM-DD format', () => {
+        const builder = new QueryBuilder()
+        expect(() => builder.latitude(0).longitude(0).startDate('2026-08-10').build()).not.toThrow(
+          WeatherValidationError,
+        )
+      })
+
+      it('should throw when endDate is not in YYYY-MM-DD format', () => {
+        const builder = new QueryBuilder()
+        expect(() => builder.latitude(0).longitude(0).endDate('08-10-2026').build()).toThrow(
+          WeatherValidationError,
+        )
+      })
+
+      it('should not throw when endDate is in YYYY-MM-DD format', () => {
+        const builder = new QueryBuilder()
+        expect(() => builder.latitude(0).longitude(0).endDate('2026-08-10').build()).not.toThrow(
+          WeatherValidationError,
+        )
+      })
+    })
   })
 })
