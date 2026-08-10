@@ -136,5 +136,41 @@ describe('QueryBuilder', () => {
         expect(result.azimuth).toBe('180')
       })
     })
+
+    describe('array-capable parameters', () => {
+      it('should set single elevation value', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).elevation(100).build()
+        expect(result.elevation).toBe('100')
+      })
+
+      it('should join multiple elevation values with a comma', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).elevation([100, 200]).build()
+        expect(result.elevation).toBe('100,200')
+      })
+
+      it('should set elevation to "nan"', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).elevation('nan').build()
+        expect(result.elevation).toBe('nan')
+      })
+
+      it('should set single model value', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).models('best_match').build()
+        expect(result.models).toBe('best_match')
+      })
+
+      it('should join multiple model values with a comma', () => {
+        const builder = new QueryBuilder()
+        const result = builder
+          .latitude(0)
+          .longitude(0)
+          .models(['best_match', 'cmc_gem_gdps'])
+          .build()
+        expect(result.models).toBe('best_match,cmc_gem_gdps')
+      })
+    })
   })
 })
