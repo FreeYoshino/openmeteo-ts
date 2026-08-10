@@ -217,4 +217,66 @@ describe('QueryBuilder', () => {
       })
     })
   })
+
+  describe('fluent chaining', () => {
+    it('should support method chaining', () => {
+      const builder = new QueryBuilder()
+      const result = builder.latitude(0)
+
+      expect(result).toBe(builder)
+    })
+
+    it('should build a complete query with chained setters', () => {
+      const builder = new QueryBuilder()
+      const result = builder
+        .latitude(40.7128)
+        .longitude(-74.006)
+        .hourly(['temperature_2m', 'relative_humidity_2m'])
+        .daily(['temperature_2m_max', 'temperature_2m_min'])
+        .current(['apparent_temperature', 'cloud_cover'])
+        .minutely15(['precipitation', 'cape'])
+        .temperatureUnit('fahrenheit')
+        .windSpeedUnit('mph')
+        .precipitationUnit('inch')
+        .timeFormat('unixtime')
+        .timezone('America/New_York')
+        .pastDays(5)
+        .pastHours(12)
+        .forecastDays(7)
+        .forecastHours(24)
+        .startDate('2026-08-10')
+        .endDate('2026-08-10')
+        .tilt(30)
+        .azimuth(180)
+        .cellSelection('nearest')
+        .apiKey('my-api-key')
+        .models(['best_match', 'cmc_gem_gdps'])
+        .build()
+
+      expect(result).toEqual({
+        latitude: '40.7128',
+        longitude: '-74.006',
+        hourly: 'temperature_2m,relative_humidity_2m',
+        daily: 'temperature_2m_max,temperature_2m_min',
+        current: 'apparent_temperature,cloud_cover',
+        minutely_15: 'precipitation,cape',
+        temperature_unit: 'fahrenheit',
+        wind_speed_unit: 'mph',
+        precipitation_unit: 'inch',
+        timeformat: 'unixtime',
+        timezone: 'America/New_York',
+        past_days: '5',
+        past_hours: '12',
+        forecast_days: '7',
+        forecast_hours: '24',
+        start_date: '2026-08-10',
+        end_date: '2026-08-10',
+        tilt: '30',
+        azimuth: '180',
+        cell_selection: 'nearest',
+        apikey: 'my-api-key',
+        models: 'best_match,cmc_gem_gdps',
+      })
+    })
+  })
 })
