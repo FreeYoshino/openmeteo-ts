@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { QueryBuilder } from '../../src/builder/query-builder.js'
+import { WeatherValidationError } from '../../src/http/errors.js'
 
 describe('QueryBuilder', () => {
   describe('Constructor', () => {
@@ -284,12 +285,76 @@ describe('QueryBuilder', () => {
     describe('required parameters', () => {
       it('should throw when latitude is not set', () => {
         const builder = new QueryBuilder()
-        expect(() => builder.longitude(0).build()).toThrow('Missing required parameter: latitude')
+        expect(() => builder.longitude(0).build()).toThrow(WeatherValidationError)
       })
 
       it('should throw when longitude is not set', () => {
         const builder = new QueryBuilder()
-        expect(() => builder.latitude(0).build()).toThrow('Missing required parameter: longitude')
+        expect(() => builder.latitude(0).build()).toThrow(WeatherValidationError)
+      })
+    })
+
+    describe('range validation', () => {
+      it('should throw when latitude is out of range(>90)', () => {
+        const builder = new QueryBuilder()
+        expect(() => builder.latitude(91).longitude(0).build()).toThrow(WeatherValidationError)
+      })
+
+      it('should throw when latitude is out of range(<-90)', () => {
+        const builder = new QueryBuilder()
+        expect(() => builder.latitude(-91).longitude(0).build()).toThrow(WeatherValidationError)
+      })
+
+      it('should throw when longitude is out of range(>180)', () => {
+        const builder = new QueryBuilder()
+        expect(() => builder.latitude(0).longitude(181).build()).toThrow(WeatherValidationError)
+      })
+
+      it('should throw when longitude is out of range(<-180)', () => {
+        const builder = new QueryBuilder()
+        expect(() => builder.latitude(0).longitude(-181).build()).toThrow(WeatherValidationError)
+      })
+
+      it('should throw when pastDays is out of range(>92)', () => {
+        const builder = new QueryBuilder()
+        expect(() => builder.latitude(0).longitude(0).pastDays(93).build()).toThrow(
+          WeatherValidationError,
+        )
+      })
+
+      it('should throw when pastDays is out of range(<0)', () => {
+        const builder = new QueryBuilder()
+        expect(() => builder.latitude(0).longitude(0).pastDays(-1).build()).toThrow(
+          WeatherValidationError,
+        )
+      })
+
+      it('should throw when pastHours is out of range(<0)', () => {
+        const builder = new QueryBuilder()
+        expect(() => builder.latitude(0).longitude(0).pastHours(-1).build()).toThrow(
+          WeatherValidationError,
+        )
+      })
+
+      it('should throw when forecastDays is out of range(>16)', () => {
+        const builder = new QueryBuilder()
+        expect(() => builder.latitude(0).longitude(0).forecastDays(17).build()).toThrow(
+          WeatherValidationError,
+        )
+      })
+
+      it('should throw when forecastDays is out of range(<0)', () => {
+        const builder = new QueryBuilder()
+        expect(() => builder.latitude(0).longitude(0).forecastDays(-1).build()).toThrow(
+          WeatherValidationError,
+        )
+      })
+
+      it('should throw when forecastHours is out of range(<0)', () => {
+        const builder = new QueryBuilder()
+        expect(() => builder.latitude(0).longitude(0).forecastHours(-1).build()).toThrow(
+          WeatherValidationError,
+        )
       })
     })
   })
