@@ -79,7 +79,7 @@ describe('QueryBuilder', () => {
       })
     })
 
-    describe('unit parameters', () => {
+    describe('unit and enum parameters', () => {
       it('should set temperature unit', () => {
         const builder = new QueryBuilder()
         const result = builder.latitude(0).longitude(0).temperatureUnit('fahrenheit').build()
@@ -96,6 +96,18 @@ describe('QueryBuilder', () => {
         const builder = new QueryBuilder()
         const result = builder.latitude(0).longitude(0).precipitationUnit('inch').build()
         expect(result.precipitation_unit).toBe('inch')
+      })
+
+      it('should set time format', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).timeFormat('unixtime').build()
+        expect(result.timeformat).toBe('unixtime')
+      })
+
+      it('should set cell selection', () => {
+        const builder = new QueryBuilder()
+        const result = builder.latitude(0).longitude(0).cellSelection('nearest').build()
+        expect(result.cell_selection).toBe('nearest')
       })
     })
 
