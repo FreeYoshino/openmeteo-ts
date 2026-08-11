@@ -1,4 +1,12 @@
-import { RawHourlyWeatherResponse, HourlyWeatherConditions } from '../types/response.js'
+import {
+  RawTimedBlock,
+  RawHourlyWeatherResponse,
+  HourlyWeatherConditions,
+  RawDailyWeatherResponse,
+  DailyWeatherConditions,
+  RawMinutelyWeatherResponse,
+  Minutely15WeatherConditions,
+} from '../types/response.js'
 import { WeatherMappingError } from '../http/errors.js'
 /**
  * Maps the raw hourly weather response to a list of hourly weather conditions.
@@ -7,31 +15,15 @@ import { WeatherMappingError } from '../http/errors.js'
  * @returns HourlyWeatherConditions[] - The mapped list of hourly weather conditions.
  */
 function mapHourly(raw: RawHourlyWeatherResponse): HourlyWeatherConditions[] {
-  const variableKeys = Object.keys(raw).filter((key) => key !== 'time')
+  return mapTimeArray<HourlyWeatherConditions>(raw, 'hourly')
+}
 
-  const result: HourlyWeatherConditions[] = raw.time.map((time, index) => {
-    const date = timeToDate(time)
+function mapDaily(raw: RawDailyWeatherResponse): DailyWeatherConditions[] {
+  return mapTimeArray<DailyWeatherConditions>(raw, 'daily')
+}
 
-    const conditions: Record<string, number | string> = {}
-    variableKeys.forEach((key) => {
-      if (raw[key] === undefined) {
-        throw new WeatherMappingError(`Missing key '${key}' in raw response`)
-      }
-
-      const value = raw[key][index]
-      if (value === undefined) {
-        throw new WeatherMappingError(`Missing value for key '${key}' at index ${index}`)
-      }
-      conditions[key] = value
-    })
-
-    return {
-      time: date,
-      ...conditions,
-    }
-  })
-
-  return result
+function mapMinutely15(raw: RawMinutelyWeatherResponse): Minutely15WeatherConditions[] {
+  return mapTimeArray<Minutely15WeatherConditions>(raw, 'minutely_15')
 }
 
 /**
@@ -47,4 +39,41 @@ function timeToDate(time: string | number): Date {
   const date = typeof time === 'number' ? new Date(time * 1000) : new Date(time)
 
   return date
+}
+
+/**
+ * Maps an array of time values to an array of Date objects.
+ *
+ * @param raw - The raw array of time values to be mapped.
+ * @param targetType - A human-readable string representing the type of weather data being mapped (e.g., "hourly", "daily").
+ * @returns {T[]} An array of mapped time values as Date objects.
+ */
+function mapTimeArray<T>(raw: RawTimedBlock, targetType: string): T[] {
+  const variableKeys = Object.keys(raw).filter((key) => key !== 'time')
+
+  const result: T[] = raw.time.map((time, index) => {
+    const date = timeToDate(time)
+
+    const conditions: Record<string, number | string> = {}
+    for (const key of variableKeys) {
+      const arr = raw[key]
+      if (arr === undefined) {
+        throw new WeatherMappingError(`Missing key '${key}' in raw ${targetType} response`)
+      }
+      const value = arr[index]
+      if (value === undefined) {
+        throw new WeatherMappingError(
+          `Missing value for key '${key}' at index ${index} in raw ${targetType} response`,
+        )
+      }
+      conditions[key] = value
+    }
+
+    return {
+      time: date,
+      ...conditions,
+    } as T
+  })
+
+  return result
 }
