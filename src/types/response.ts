@@ -133,12 +133,17 @@ export interface RawWeatherResponse {
 }
 
 /**
- * Raw hourly weather data block returned by the API.
+ * Shared structure for raw time-series weather data blocks returned by the API.
  *
- * Each key (except `time`) corresponds to a requested hourly weather variable,
- * with values as arrays of numbers representing the data at each timestep.
+ * The Open-Meteo API returns weather data in "parallel array" format: a {@link time}
+ * array containing timesteps, and each weather variable as a separate array where
+ * the value at index `i` corresponds to the timestep at `time[i]`.
+ *
+ * This interface serves as the base for {@link RawHourlyWeatherResponse},
+ * {@link RawDailyWeatherResponse}, and {@link RawMinutelyWeatherResponse},
+ * all of which share the same structural shape.
  */
-export interface RawHourlyWeatherResponse {
+export interface RawTimedBlock {
   /**
    * Array of ISO 8601 or Unixtime formatted time strings representing each hourly timestep.
    *
@@ -153,13 +158,17 @@ export interface RawHourlyWeatherResponse {
    * Each key is a weather variable (e.g., 'temperature_2m', 'relative_humidity_2m')
    * with a numeric array where each element corresponds to the timestep at the same index
    * in the {@link time} array.
-   *
-   * @example
-   * // Accessing temperature data
-   * response.hourly['temperature_2m'] // => [12.5, 13.1, 13.8, ...]
    */
   [key: string]: number[] | string[]
 }
+
+/**
+ * Raw hourly weather data block returned by the API.
+ *
+ * Each key (except `time`) corresponds to a requested hourly weather variable,
+ * with values as arrays of numbers representing the data at each timestep.
+ */
+export interface RawHourlyWeatherResponse extends RawTimedBlock {}
 
 /**
  * Raw daily weather data block returned by the API.
@@ -167,28 +176,7 @@ export interface RawHourlyWeatherResponse {
  * Each key (except `time`) corresponds to a requested daily weather variable,
  * with values as arrays of numbers representing the data for each day.
  */
-export interface RawDailyWeatherResponse {
-  /**
-   * Array of ISO 8601 or Unixtime formatted date strings representing each daily timestep.
-   *
-   * @example ['2023-01-01', '2023-01-02', '2023-01-03'] // ISO 8601 strings
-   * @example [1672531200, 1672617600, 1672704000] // Unix timestamps
-   */
-  time: string[] | number[]
-
-  /**
-   * Additional weather variable data arrays, keyed by variable name.
-   *
-   * Each key is a weather variable (e.g., 'temperature_2m_max', 'precipitation_sum')
-   * with a numeric array where each element corresponds to the day at the same index
-   * in the {@link time} array.
-   *
-   * @example
-   * // Accessing daily max temperature data
-   * response.daily['temperature_2m_max'] // => [15.2, 14.8, 16.1, ...]
-   */
-  [key: string]: number[] | string[]
-}
+export interface RawDailyWeatherResponse extends RawTimedBlock {}
 
 /**
  * Raw current weather data block returned by the API.
@@ -225,28 +213,7 @@ export interface RawCurrentWeatherResponse {
  * Each key (except `time`) corresponds to a requested minutely_15 weather variable,
  * with values as arrays of numbers representing the data at each 15-minute timestep.
  */
-export interface RawMinutelyWeatherResponse {
-  /**
-   * Array of ISO 8601 or Unixtime formatted time strings representing each 15-minute timestep.
-   *
-   * @example ['2023-01-01T00:00', '2023-01-01T00:15', '2023-01-01T00:30'] // ISO 8601 strings
-   * @example [1672531200, 1672532100, 1672533000] // Unix timestamps
-   */
-  time: string[] | number[]
-
-  /**
-   * Additional weather variable data arrays, keyed by variable name.
-   *
-   * Each key is a weather variable (e.g., 'temperature_2m', 'precipitation')
-   * with a numeric array where each element corresponds to the timestep at the same index
-   * in the {@link time} array.
-   *
-   * @example
-   * // Accessing 15-minute precipitation data
-   * response.minutely_15['precipitation'] // => [0.0, 0.2, 0.5, ...]
-   */
-  [key: string]: number[] | string[]
-}
+export interface RawMinutelyWeatherResponse extends RawTimedBlock {}
 
 /**
  * Normalized weather response structure returned by the Open-Meteo Weather Forecast API.
