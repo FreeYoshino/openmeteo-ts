@@ -140,11 +140,12 @@ export interface RawWeatherResponse {
  */
 export interface RawHourlyWeatherResponse {
   /**
-   * Array of ISO 8601 formatted time strings representing each hourly timestep.
+   * Array of ISO 8601 or Unixtime formatted time strings representing each hourly timestep.
    *
-   * @example ['2023-01-01T00:00', '2023-01-01T01:00', '2023-01-01T02:00']
+   * @example ['2023-01-01T00:00', '2023-01-01T01:00', '2023-01-01T02:00'] // ISO 8601 strings
+   * @example [1672531200, 1672534800, 1672538400] // Unix timestamps
    */
-  time: string[]
+  time: string[] | number[]
 
   /**
    * Additional weather variable data arrays, keyed by variable name.
@@ -168,11 +169,12 @@ export interface RawHourlyWeatherResponse {
  */
 export interface RawDailyWeatherResponse {
   /**
-   * Array of ISO 8601 formatted date strings representing each daily timestep.
+   * Array of ISO 8601 or Unixtime formatted date strings representing each daily timestep.
    *
-   * @example ['2023-01-01', '2023-01-02', '2023-01-03']
+   * @example ['2023-01-01', '2023-01-02', '2023-01-03'] // ISO 8601 strings
+   * @example [1672531200, 1672617600, 1672704000] // Unix timestamps
    */
-  time: string[]
+  time: string[] | number[]
 
   /**
    * Additional weather variable data arrays, keyed by variable name.
@@ -196,11 +198,12 @@ export interface RawDailyWeatherResponse {
  */
 export interface RawCurrentWeatherResponse {
   /**
-   * ISO 8601 formatted time string representing the timestamp of the current conditions.
+   * ISO 8601 or Unixtime formatted time string representing the timestamp of the current conditions.
    *
-   * @example '2023-01-01T12:00'
+   * @example '2023-01-01T12:00' // ISO 8601 string
+   * @example 1672531200 // Unix timestamp
    */
-  time: string
+  time: string | number
 
   /**
    * Additional current weather variable values, keyed by variable name.
@@ -224,11 +227,12 @@ export interface RawCurrentWeatherResponse {
  */
 export interface RawMinutelyWeatherResponse {
   /**
-   * Array of ISO 8601 formatted time strings representing each 15-minute timestep.
+   * Array of ISO 8601 or Unixtime formatted time strings representing each 15-minute timestep.
    *
-   * @example ['2023-01-01T00:00', '2023-01-01T00:15', '2023-01-01T00:30']
+   * @example ['2023-01-01T00:00', '2023-01-01T00:15', '2023-01-01T00:30'] // ISO 8601 strings
+   * @example [1672531200, 1672532100, 1672533000] // Unix timestamps
    */
-  time: string[]
+  time: string[] | number[]
 
   /**
    * Additional weather variable data arrays, keyed by variable name.
