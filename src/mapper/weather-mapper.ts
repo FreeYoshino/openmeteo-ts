@@ -20,14 +20,32 @@ function mapHourly(raw: RawHourlyWeatherResponse): HourlyWeatherConditions[] {
   return mapTimeArray<HourlyWeatherConditions>(raw, 'hourly')
 }
 
+/**
+ * Maps the raw daily weather response to a list of daily weather conditions.
+ *
+ * @param raw - The raw daily weather response to be mapped.
+ * @returns DailyWeatherConditions[] - The mapped list of daily weather conditions.
+ */
 function mapDaily(raw: RawDailyWeatherResponse): DailyWeatherConditions[] {
   return mapTimeArray<DailyWeatherConditions>(raw, 'daily')
 }
 
+/**
+ * Maps the raw minutely 15 weather response to a list of minutely 15 weather conditions.
+ *
+ * @param raw - The raw minutely 15 weather response to be mapped.
+ * @returns Minutely15WeatherConditions[] - The mapped list of minutely 15 weather conditions.
+ */
 function mapMinutely15(raw: RawMinutelyWeatherResponse): Minutely15WeatherConditions[] {
   return mapTimeArray<Minutely15WeatherConditions>(raw, 'minutely_15')
 }
 
+/**
+ * Maps the raw current weather response to a current weather conditions object.
+ *
+ * @param raw - The raw current weather response to be mapped.
+ * @returns CurrentWeatherConditions - The mapped current weather conditions.
+ */
 function mapCurrent(raw: RawCurrentWeatherResponse): CurrentWeatherConditions {
   const { time, interval, ...variables } = raw
   return {
