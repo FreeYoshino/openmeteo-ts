@@ -6,6 +6,8 @@ import {
   DailyWeatherConditions,
   RawMinutelyWeatherResponse,
   Minutely15WeatherConditions,
+  RawCurrentWeatherResponse,
+  CurrentWeatherConditions,
 } from '../types/response.js'
 import { WeatherMappingError } from '../http/errors.js'
 /**
@@ -26,6 +28,14 @@ function mapMinutely15(raw: RawMinutelyWeatherResponse): Minutely15WeatherCondit
   return mapTimeArray<Minutely15WeatherConditions>(raw, 'minutely_15')
 }
 
+function mapCurrent(raw: RawCurrentWeatherResponse): CurrentWeatherConditions {
+  const { time, interval, ...variables } = raw
+  return {
+    time: timeToDate(time),
+    interval,
+    ...variables,
+  } as CurrentWeatherConditions
+}
 /**
  * Transforms a time value (string or number) into a Date object.
  *
