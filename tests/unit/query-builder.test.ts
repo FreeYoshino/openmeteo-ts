@@ -458,6 +458,66 @@ describe('QueryBuilder', () => {
           )
         })
       })
+
+      describe('tilt', () => {
+        it('should throw when tilt is out of range(<0)', () => {
+          const builder = new QueryBuilder()
+          expect(() => builder.latitude(0).longitude(0).tilt(-1).build()).toThrow(
+            WeatherValidationError,
+          )
+        })
+
+        it('should throw when tilt is out of range(>90)', () => {
+          const builder = new QueryBuilder()
+          expect(() => builder.latitude(0).longitude(0).tilt(91).build()).toThrow(
+            WeatherValidationError,
+          )
+        })
+
+        it('should not throw when tilt is at the lower boundary(0)', () => {
+          const builder = new QueryBuilder()
+          expect(() => builder.latitude(0).longitude(0).tilt(0).build()).not.toThrow(
+            WeatherValidationError,
+          )
+        })
+
+        it('should not throw when tilt is at the upper boundary(90)', () => {
+          const builder = new QueryBuilder()
+          expect(() => builder.latitude(0).longitude(0).tilt(90).build()).not.toThrow(
+            WeatherValidationError,
+          )
+        })
+      })
+
+      describe('azimuth', () => {
+        it('should throw when azimuth is out of range(<0)', () => {
+          const builder = new QueryBuilder()
+          expect(() => builder.latitude(0).longitude(0).azimuth(-1).build()).toThrow(
+            WeatherValidationError,
+          )
+        })
+
+        it('should throw when azimuth is out of range(>360)', () => {
+          const builder = new QueryBuilder()
+          expect(() => builder.latitude(0).longitude(0).azimuth(361).build()).toThrow(
+            WeatherValidationError,
+          )
+        })
+
+        it('should not throw when azimuth is at the lower boundary(0)', () => {
+          const builder = new QueryBuilder()
+          expect(() => builder.latitude(0).longitude(0).azimuth(0).build()).not.toThrow(
+            WeatherValidationError,
+          )
+        })
+
+        it('should not throw when azimuth is at the upper boundary(360)', () => {
+          const builder = new QueryBuilder()
+          expect(() => builder.latitude(0).longitude(0).azimuth(360).build()).not.toThrow(
+            WeatherValidationError,
+          )
+        })
+      })
     })
 
     describe('date format validation', () => {
