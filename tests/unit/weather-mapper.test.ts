@@ -88,7 +88,7 @@ describe('mapWeatherResponse', () => {
         hourly: {
           time: ['2026-08-12T12:00:00Z', '2026-08-12T13:00:00Z'],
           temperature_2m: [25, 26],
-          humidity_2m: [50, 55],
+          albedo: [50, 55],
         },
       })
 
@@ -97,11 +97,11 @@ describe('mapWeatherResponse', () => {
       expect(result.hourly).toHaveLength(2)
       expect(result.hourly![0]).toMatchObject({
         temperature_2m: 25,
-        humidity_2m: 50,
+        albedo: 50,
       })
       expect(result.hourly![1]).toMatchObject({
         temperature_2m: 26,
-        humidity_2m: 55,
+        albedo: 55,
       })
     })
 
@@ -127,8 +127,8 @@ describe('mapWeatherResponse', () => {
       const rawResponse: RawWeatherResponse = makeRawWeatherResponse({
         daily: {
           time: ['2026-08-12T12:00:00Z', '2026-08-12T13:00:00Z'],
-          temperature_2m: [25, 26],
-          humidity_2m: [50, 55],
+          apparent_temperature_max: [25, 26],
+          apparent_temperature_min: [50, 55],
         },
       })
 
@@ -136,12 +136,12 @@ describe('mapWeatherResponse', () => {
 
       expect(result.daily).toHaveLength(2)
       expect(result.daily![0]).toMatchObject({
-        temperature_2m: 25,
-        humidity_2m: 50,
+        apparent_temperature_max: 25,
+        apparent_temperature_min: 50,
       })
       expect(result.daily![1]).toMatchObject({
-        temperature_2m: 26,
-        humidity_2m: 55,
+        apparent_temperature_max: 26,
+        apparent_temperature_min: 55,
       })
     })
 
@@ -168,7 +168,7 @@ describe('mapWeatherResponse', () => {
         minutely_15: {
           time: ['2026-08-12T12:00:00Z', '2026-08-12T13:00:00Z'],
           temperature_2m: [25, 26],
-          humidity_2m: [50, 55],
+          apparent_temperature: [50, 55],
         },
       })
 
@@ -177,11 +177,11 @@ describe('mapWeatherResponse', () => {
       expect(result.minutely_15).toHaveLength(2)
       expect(result.minutely_15![0]).toMatchObject({
         temperature_2m: 25,
-        humidity_2m: 50,
+        apparent_temperature: 50,
       })
       expect(result.minutely_15![1]).toMatchObject({
         temperature_2m: 26,
-        humidity_2m: 55,
+        apparent_temperature: 55,
       })
     })
 
@@ -209,7 +209,7 @@ describe('mapWeatherResponse', () => {
           time: '2026-08-12T12:00:00Z',
           interval: 0,
           temperature_2m: 25,
-          humidity_2m: 50,
+          apparent_temperature: 50,
         },
       })
 
@@ -219,7 +219,7 @@ describe('mapWeatherResponse', () => {
         time: new Date('2026-08-12T12:00:00Z'),
         interval: 0,
         temperature_2m: 25,
-        humidity_2m: 50,
+        apparent_temperature: 50,
       })
     })
 
@@ -262,7 +262,7 @@ describe('mapWeatherResponse', () => {
         },
         daily: {
           time: ['2026-08-12T12:00:00Z', '2026-08-13T12:00:00Z'],
-          temperature_2m: [25, 27],
+          apparent_temperature_max: [25, 27],
         },
       })
 
