@@ -200,4 +200,42 @@ describe('mapWeatherResponse', () => {
       })
     })
   })
+
+  describe('current mapping', () => {
+    it('should map current weather data correctly', () => {
+      const rawResponse: RawWeatherResponse = makeRawWeatherResponse({
+        current: {
+          time: '2026-08-12T12:00:00Z',
+          interval: 0,
+          temperature_2m: 25,
+          humidity_2m: 50,
+        },
+      })
+
+      const result = mapWeatherResponse(rawResponse)
+
+      expect(result.current).toMatchObject({
+        time: new Date('2026-08-12T12:00:00Z'),
+        interval: 0,
+        temperature_2m: 25,
+        humidity_2m: 50,
+      })
+    })
+
+    it('should pass through current_units unchanged', () => {
+      const rawResponse: RawWeatherResponse = makeRawWeatherResponse({
+        current_units: {
+          temperature_2m: '°C',
+          humidity_2m: '%',
+        },
+      })
+
+      const result = mapWeatherResponse(rawResponse)
+
+      expect(result.current_units).toEqual({
+        temperature_2m: '°C',
+        humidity_2m: '%',
+      })
+    })
+  })
 })
