@@ -19,7 +19,7 @@ import { WeatherMappingError } from '../http/errors.js'
  * @returns {HourlyWeatherConditions[]} - The mapped list of hourly weather conditions.
  */
 function mapHourly(raw: RawHourlyWeatherResponse): HourlyWeatherConditions[] {
-  return mapTimeArray<HourlyWeatherConditions>(raw, 'hourly')
+  return mapTimeArray(raw, 'hourly') as HourlyWeatherConditions[]
 }
 
 /**
@@ -29,7 +29,7 @@ function mapHourly(raw: RawHourlyWeatherResponse): HourlyWeatherConditions[] {
  * @returns {DailyWeatherConditions[]} - The mapped list of daily weather conditions.
  */
 function mapDaily(raw: RawDailyWeatherResponse): DailyWeatherConditions[] {
-  return mapTimeArray<DailyWeatherConditions>(raw, 'daily')
+  return mapTimeArray(raw, 'daily') as DailyWeatherConditions[]
 }
 
 /**
@@ -39,7 +39,7 @@ function mapDaily(raw: RawDailyWeatherResponse): DailyWeatherConditions[] {
  * @returns {Minutely15WeatherConditions[]} - The mapped list of minutely 15 weather conditions.
  */
 function mapMinutely15(raw: RawMinutelyWeatherResponse): Minutely15WeatherConditions[] {
-  return mapTimeArray<Minutely15WeatherConditions>(raw, 'minutely_15')
+  return mapTimeArray(raw, 'minutely_15') as Minutely15WeatherConditions[]
 }
 
 /**
@@ -105,15 +105,18 @@ function timeToDate(time: string | number): Date {
  * @param targetType - A human-readable string representing the type of weather data being mapped (e.g., "hourly", "daily").
  * @returns {T[]} - An array of normalized weather condition objects.
  */
-function mapTimeArray<T>(raw: RawTimedBlock, targetType: string): T[] {
+function mapTimeArray<K extends string, V = number[]>(
+  raw: RawTimedBlock<K, V>,
+  targetType: string,
+) {
   const variableKeys = Object.keys(raw).filter((key) => key !== 'time')
 
-  const result: T[] = raw.time.map((time, index) => {
+  const result = raw.time.map((time, index) => {
     const date = timeToDate(time)
 
     const conditions: Record<string, number | string> = {}
     for (const key of variableKeys) {
-      const arr = raw[key]
+      const arr = (raw as Record<string, (number | string)[] | undefined>)[key]
       if (arr === undefined) {
         throw new WeatherMappingError(`Missing key '${key}' in raw ${targetType} response`)
       }
@@ -129,7 +132,7 @@ function mapTimeArray<T>(raw: RawTimedBlock, targetType: string): T[] {
     return {
       time: date,
       ...conditions,
-    } as T
+    }
   })
 
   return result
