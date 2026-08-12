@@ -489,5 +489,73 @@ describe('QueryBuilder', () => {
         )
       })
     })
+
+    describe('Data type validation', () => {
+      describe('Integer validation', () => {
+        describe('pastDays', () => {
+          it('should throw when pastDays is not an integer', () => {
+            const builder = new QueryBuilder()
+            expect(() => builder.latitude(0).longitude(0).pastDays(1.5).build()).toThrow(
+              WeatherValidationError,
+            )
+          })
+
+          it('should not throw when pastDays is an integer', () => {
+            const builder = new QueryBuilder()
+            expect(() => builder.latitude(0).longitude(0).pastDays(1).build()).not.toThrow(
+              WeatherValidationError,
+            )
+          })
+        })
+
+        describe('pastHours', () => {
+          it('should throw when pastHours is not an integer', () => {
+            const builder = new QueryBuilder()
+            expect(() => builder.latitude(0).longitude(0).pastHours(1.5).build()).toThrow(
+              WeatherValidationError,
+            )
+          })
+
+          it('should not throw when pastHours is an integer', () => {
+            const builder = new QueryBuilder()
+            expect(() => builder.latitude(0).longitude(0).pastHours(1).build()).not.toThrow(
+              WeatherValidationError,
+            )
+          })
+        })
+
+        describe('forecastDays', () => {
+          it('should throw when forecastDays is not an integer', () => {
+            const builder = new QueryBuilder()
+            expect(() => builder.latitude(0).longitude(0).forecastDays(1.5).build()).toThrow(
+              WeatherValidationError,
+            )
+          })
+
+          it('should not throw when forecastDays is an integer', () => {
+            const builder = new QueryBuilder()
+            expect(() => builder.latitude(0).longitude(0).forecastDays(1).build()).not.toThrow(
+              WeatherValidationError,
+            )
+          })
+        })
+
+        describe('forecastHours', () => {
+          it('should throw when forecastHours is not an integer', () => {
+            const builder = new QueryBuilder()
+            expect(() => builder.latitude(0).longitude(0).forecastHours(1.5).build()).toThrow(
+              WeatherValidationError,
+            )
+          })
+
+          it('should not throw when forecastHours is an integer', () => {
+            const builder = new QueryBuilder()
+            expect(() => builder.latitude(0).longitude(0).forecastHours(1).build()).not.toThrow(
+              WeatherValidationError,
+            )
+          })
+        })
+      })
+    })
   })
 })
