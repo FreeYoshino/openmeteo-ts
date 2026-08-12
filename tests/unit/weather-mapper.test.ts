@@ -223,6 +223,24 @@ describe('mapWeatherResponse', () => {
       })
     })
 
+    it('should convert unix timestamp to Date object for current data', () => {
+      const rawResponse: RawWeatherResponse = makeRawWeatherResponse({
+        current: {
+          time: 1786536000, // Unix timestamp for 2026-08-12T12:00:00Z
+          interval: 900,
+          temperature_2m: 25,
+        },
+      })
+
+      const result = mapWeatherResponse(rawResponse)
+
+      expect(result.current).toMatchObject({
+        time: new Date('2026-08-12T12:00:00Z'),
+        interval: 900,
+        temperature_2m: 25,
+      })
+    })
+
     it('should pass through current_units unchanged', () => {
       const rawResponse: RawWeatherResponse = makeRawWeatherResponse({
         current_units: {
