@@ -89,7 +89,7 @@ export function mapWeatherResponse(raw: RawWeatherResponse): WeatherResponse {
  * If the time is a number, it's treated as a Unix timestamp in seconds and multiplied by 1000.
  * If the time is a string, it's parsed directly as an ISO 8601 date string.
  *
- * @param time - The time value to convert, either a number (epoch milliseconds) or a string (ISO 8601 format)
+ * @param time - The time value to convert, either a unix timestamp in seconds or an ISO 8601 formatted string.
  * @returns {Date} - A Date object representing the given time
  */
 function timeToDate(time: string | number): Date {
