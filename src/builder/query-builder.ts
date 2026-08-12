@@ -384,6 +384,7 @@ export class QueryBuilder {
     this.checkDateFormat('end_date')
   }
 
+  /** Validates that integer parameters are indeed integers. */
   private validateInteger(): void {
     this.checkInteger('past_days')
     this.checkInteger('forecast_days')
