@@ -345,6 +345,7 @@ export class QueryBuilder {
   build(): Record<string, string> {
     // Validate required parameters and ranges before returning the final query object
     this.validateRequiredParams()
+    this.validateInteger()
     this.validateRanges()
     this.validateDateFormats()
 
@@ -381,6 +382,12 @@ export class QueryBuilder {
     this.checkDateFormat('end_date')
   }
 
+  private validateInteger(): void {
+    this.checkInteger('past_days')
+    this.checkInteger('forecast_days')
+    this.checkInteger('past_hours')
+    this.checkInteger('forecast_hours')
+  }
   /**
    * Helpers to check if a numeric parameter is within a specified range.
    *
@@ -428,6 +435,33 @@ export class QueryBuilder {
       throw new WeatherValidationError(
         `Invalid ${paramName} value: ${dateStr}. Must be in the format 'YYYY-MM-DD'.`,
       )
+    }
+  }
+
+  /**
+   * Helpers to check if a parameter value is an integer.
+   *
+   * @param paramName - The name of the parameter to check.
+   * @throws {WeatherValidationError} If the parameter value is not an integer.
+   */
+  private checkInteger(paramName: string): void {
+    const valueStr = this.params.get(paramName)
+    if (!valueStr) return
+
+    if (!valueStr.includes(',')) {
+      const value = parseFloat(valueStr)
+      if (!Number.isInteger(value)) {
+        throw new WeatherValidationError(
+          `Invalid ${paramName} value: ${valueStr}. Must be an integer.`,
+        )
+      }
+    } else {
+      const value = valueStr.split(',').map((v) => parseFloat(v))
+      for (const v of value) {
+        if (!Number.isInteger(v)) {
+          throw new WeatherValidationError(`Invalid ${paramName} value: ${v}. Must be an integer.`)
+        }
+      }
     }
   }
 }
