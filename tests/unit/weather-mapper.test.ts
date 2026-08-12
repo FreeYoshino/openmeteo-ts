@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { mapWeatherResponse } from '../../src/mapper/weather-mapper.js'
 import { RawWeatherResponse } from '../../src/types/response.js'
+import { WeatherMappingError } from '../../src/http/errors.js'
 
 function makeRawWeatherResponse(overrides: Partial<RawWeatherResponse> = {}): RawWeatherResponse {
   return {
@@ -236,6 +237,19 @@ describe('mapWeatherResponse', () => {
         temperature_2m: '°C',
         humidity_2m: '%',
       })
+    })
+  })
+
+  describe('array length mismatch handling', () => {
+    it('should throw WeatherMappingError when variable array lengths do not match', () => {
+      const rawResponse: RawWeatherResponse = makeRawWeatherResponse({
+        hourly: {
+          time: ['2026-08-12T12:00:00Z', '2026-08-12T13:00:00Z'],
+          temperature_2m: [25], // Mismatched length
+        },
+      })
+
+      expect(() => mapWeatherResponse(rawResponse)).toThrow(WeatherMappingError)
     })
   })
 })
