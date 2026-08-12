@@ -67,4 +67,17 @@ describe('mapWeatherResponse', () => {
       expect(result.hourly![0].time).toEqual(new Date('2026-08-12T12:00:00Z'))
     })
   })
+
+  describe('empty optional blocks', () => {
+    it('should leave hourly, daily, current, and minutely_15 as undefined when they are not present in the raw response', () => {
+      const rawResponse: RawWeatherResponse = makeRawWeatherResponse()
+
+      const result = mapWeatherResponse(rawResponse)
+
+      expect(result.hourly).toBeUndefined()
+      expect(result.daily).toBeUndefined()
+      expect(result.current).toBeUndefined()
+      expect(result.minutely_15).toBeUndefined()
+    })
+  })
 })
