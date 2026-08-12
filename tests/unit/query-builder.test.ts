@@ -402,16 +402,16 @@ describe('QueryBuilder', () => {
           )
         })
 
-        it('should throw when pastHours is out of range(<0)', () => {
+        it('should throw when pastHours is out of range(<1)', () => {
           const builder = new QueryBuilder()
-          expect(() => builder.latitude(0).longitude(0).pastHours(-1).build()).toThrow(
+          expect(() => builder.latitude(0).longitude(0).pastHours(0).build()).toThrow(
             WeatherValidationError,
           )
         })
 
-        it('should not throw when pastHours is at the lower boundary(0)', () => {
+        it('should not throw when pastHours is at the lower boundary(1)', () => {
           const builder = new QueryBuilder()
-          expect(() => builder.latitude(0).longitude(0).pastHours(0).build()).not.toThrow(
+          expect(() => builder.latitude(0).longitude(0).pastHours(1).build()).not.toThrow(
             WeatherValidationError,
           )
         })
@@ -444,16 +444,16 @@ describe('QueryBuilder', () => {
           )
         })
 
-        it('should throw when forecastHours is out of range(<0)', () => {
+        it('should throw when forecastHours is out of range(<1)', () => {
           const builder = new QueryBuilder()
-          expect(() => builder.latitude(0).longitude(0).forecastHours(-1).build()).toThrow(
+          expect(() => builder.latitude(0).longitude(0).forecastHours(0).build()).toThrow(
             WeatherValidationError,
           )
         })
 
-        it('should not throw when forecastHours is at the lower boundary(0)', () => {
+        it('should not throw when forecastHours is at the lower boundary(1)', () => {
           const builder = new QueryBuilder()
-          expect(() => builder.latitude(0).longitude(0).forecastHours(0).build()).not.toThrow(
+          expect(() => builder.latitude(0).longitude(0).forecastHours(1).build()).not.toThrow(
             WeatherValidationError,
           )
         })
