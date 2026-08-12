@@ -252,4 +252,24 @@ describe('mapWeatherResponse', () => {
       expect(() => mapWeatherResponse(rawResponse)).toThrow(WeatherMappingError)
     })
   })
+
+  describe('multiple blocks mapping', () => {
+    it('should map hourly and daily data correctly when both are present', () => {
+      const rawResponse: RawWeatherResponse = makeRawWeatherResponse({
+        hourly: {
+          time: ['2026-08-12T12:00:00Z', '2026-08-12T13:00:00Z'],
+          temperature_2m: [25, 26],
+        },
+        daily: {
+          time: ['2026-08-12T12:00:00Z', '2026-08-13T12:00:00Z'],
+          temperature_2m: [25, 27],
+        },
+      })
+
+      const result = mapWeatherResponse(rawResponse)
+
+      expect(result.hourly).toHaveLength(2)
+      expect(result.daily).toHaveLength(2)
+    })
+  })
 })
