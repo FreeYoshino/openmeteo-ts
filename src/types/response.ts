@@ -139,19 +139,19 @@ export interface RawWeatherResponse {
  * array containing timesteps, and each weather variable as a separate array where
  * the value at index `i` corresponds to the timestep at `time[i]`.
  *
- * This interface serves as the base for {@link RawHourlyWeatherResponse},
+ * Generic type used as the base for {@link RawHourlyWeatherResponse},
  * {@link RawDailyWeatherResponse}, and {@link RawMinutelyWeatherResponse},
  * all of which share the same structural shape.
  */
-export interface RawTimedBlock {
+export type RawTimedBlock<K extends string, V = number[]> = {
   /**
-   * Array of ISO 8601 or Unixtime formatted time strings representing each hourly timestep.
+   * Array of ISO 8601 or Unixtime formatted time strings representing each timestep.
    *
    * @example ['2023-01-01T00:00', '2023-01-01T01:00', '2023-01-01T02:00'] // ISO 8601 strings
    * @example [1672531200, 1672534800, 1672538400] // Unix timestamps
    */
-  time: string[] | number[]
-
+  time: (string | number)[]
+} & {
   /**
    * Additional weather variable data arrays, keyed by variable name.
    *
@@ -159,7 +159,7 @@ export interface RawTimedBlock {
    * with a numeric array where each element corresponds to the timestep at the same index
    * in the {@link time} array.
    */
-  [key: string]: number[] | string[]
+  [P in K]?: V
 }
 
 /**
@@ -168,7 +168,7 @@ export interface RawTimedBlock {
  * Each key (except `time`) corresponds to a requested hourly weather variable,
  * with values as arrays of numbers representing the data at each timestep.
  */
-export interface RawHourlyWeatherResponse extends RawTimedBlock {}
+export type RawHourlyWeatherResponse = RawTimedBlock<HourlyWeatherVariables>
 
 /**
  * Raw daily weather data block returned by the API.
@@ -176,7 +176,7 @@ export interface RawHourlyWeatherResponse extends RawTimedBlock {}
  * Each key (except `time`) corresponds to a requested daily weather variable,
  * with values as arrays of numbers representing the data for each day.
  */
-export interface RawDailyWeatherResponse extends RawTimedBlock {}
+export type RawDailyWeatherResponse = RawTimedBlock<DailyWeatherVariables, number[] | string[]>
 
 /**
  * Raw current weather data block returned by the API.
@@ -184,7 +184,7 @@ export interface RawDailyWeatherResponse extends RawTimedBlock {}
  * Contains scalar values (not arrays) for the current conditions at the requested location.
  * Each key (except `time`) corresponds to a requested current weather variable.
  */
-export interface RawCurrentWeatherResponse {
+export type RawCurrentWeatherResponse = {
   /**
    * ISO 8601 or Unixtime formatted time string representing the timestamp of the current conditions.
    *
@@ -193,6 +193,15 @@ export interface RawCurrentWeatherResponse {
    */
   time: string | number
 
+  /**
+   * Measurement interval for the current conditions in seconds.
+   *
+   * Indicates the time window over which the current observation was sampled.
+   *
+   * @example 900
+   */
+  interval: number
+} & {
   /**
    * Additional current weather variable values, keyed by variable name.
    *
@@ -204,7 +213,7 @@ export interface RawCurrentWeatherResponse {
    * // Accessing current temperature
    * response.current['temperature_2m'] // => 22.5
    */
-  [key: string]: number | string
+  [K in CurrentWeatherVariables]?: number | string
 }
 
 /**
@@ -213,7 +222,7 @@ export interface RawCurrentWeatherResponse {
  * Each key (except `time`) corresponds to a requested minutely_15 weather variable,
  * with values as arrays of numbers representing the data at each 15-minute timestep.
  */
-export interface RawMinutelyWeatherResponse extends RawTimedBlock {}
+export type RawMinutelyWeatherResponse = RawTimedBlock<Minutely15WeatherVariables>
 
 /**
  * Normalized weather response structure returned by the Open-Meteo Weather Forecast API.
