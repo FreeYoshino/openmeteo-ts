@@ -160,4 +160,44 @@ describe('mapWeatherResponse', () => {
       })
     })
   })
+
+  describe('minutely_15 mapping', () => {
+    it('should map parallel array to object array for minutely_15 data', () => {
+      const rawResponse: RawWeatherResponse = makeRawWeatherResponse({
+        minutely_15: {
+          time: ['2026-08-12T12:00:00Z', '2026-08-12T13:00:00Z'],
+          temperature_2m: [25, 26],
+          humidity_2m: [50, 55],
+        },
+      })
+
+      const result = mapWeatherResponse(rawResponse)
+
+      expect(result.minutely_15).toHaveLength(2)
+      expect(result.minutely_15![0]).toMatchObject({
+        temperature_2m: 25,
+        humidity_2m: 50,
+      })
+      expect(result.minutely_15![1]).toMatchObject({
+        temperature_2m: 26,
+        humidity_2m: 55,
+      })
+    })
+
+    it('should pass through minutely_15_units unchanged', () => {
+      const rawResponse: RawWeatherResponse = makeRawWeatherResponse({
+        minutely_15_units: {
+          temperature_2m: '°C',
+          humidity_2m: '%',
+        },
+      })
+
+      const result = mapWeatherResponse(rawResponse)
+
+      expect(result.minutely_15_units).toEqual({
+        temperature_2m: '°C',
+        humidity_2m: '%',
+      })
+    })
+  })
 })
