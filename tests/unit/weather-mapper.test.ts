@@ -52,7 +52,7 @@ describe('mapWeatherResponse', () => {
 
       const result = mapWeatherResponse(rawResponse)
 
-      expect(result.hourly![0].time).toEqual(new Date('2026-08-12T12:00:00Z'))
+      expect(result.hourly?.[0]?.time).toEqual(new Date('2026-08-12T12:00:00Z'))
     })
 
     it('should convert unix timestamp to Date object', () => {
@@ -65,7 +65,7 @@ describe('mapWeatherResponse', () => {
 
       const result = mapWeatherResponse(rawResponse)
 
-      expect(result.hourly![0].time).toEqual(new Date('2026-08-12T12:00:00Z'))
+      expect(result.hourly?.[0]?.time).toEqual(new Date('2026-08-12T12:00:00Z'))
     })
   })
 
@@ -95,11 +95,11 @@ describe('mapWeatherResponse', () => {
       const result = mapWeatherResponse(rawResponse)
 
       expect(result.hourly).toHaveLength(2)
-      expect(result.hourly![0]).toMatchObject({
+      expect(result.hourly?.[0]).toMatchObject({
         temperature_2m: 25,
         albedo: 50,
       })
-      expect(result.hourly![1]).toMatchObject({
+      expect(result.hourly?.[1]).toMatchObject({
         temperature_2m: 26,
         albedo: 55,
       })
@@ -135,11 +135,11 @@ describe('mapWeatherResponse', () => {
       const result = mapWeatherResponse(rawResponse)
 
       expect(result.daily).toHaveLength(2)
-      expect(result.daily![0]).toMatchObject({
+      expect(result.daily?.[0]).toMatchObject({
         apparent_temperature_max: 25,
         apparent_temperature_min: 50,
       })
-      expect(result.daily![1]).toMatchObject({
+      expect(result.daily?.[1]).toMatchObject({
         apparent_temperature_max: 26,
         apparent_temperature_min: 55,
       })
@@ -175,11 +175,11 @@ describe('mapWeatherResponse', () => {
       const result = mapWeatherResponse(rawResponse)
 
       expect(result.minutely_15).toHaveLength(2)
-      expect(result.minutely_15![0]).toMatchObject({
+      expect(result.minutely_15?.[0]).toMatchObject({
         temperature_2m: 25,
         apparent_temperature: 50,
       })
-      expect(result.minutely_15![1]).toMatchObject({
+      expect(result.minutely_15?.[1]).toMatchObject({
         temperature_2m: 26,
         apparent_temperature: 55,
       })
