@@ -50,6 +50,15 @@ function mapMinutely15(raw: RawMinutelyWeatherResponse): Minutely15WeatherCondit
  */
 function mapCurrent(raw: RawCurrentWeatherResponse): CurrentWeatherConditions {
   const { time, interval, ...variables } = raw
+
+  if (time === undefined) {
+    throw new WeatherMappingError('Missing "time" in raw current weather response')
+  }
+
+  if (interval === undefined) {
+    throw new WeatherMappingError('Missing "interval" in raw current weather response')
+  }
+
   return {
     time: timeToDate(time),
     interval,
