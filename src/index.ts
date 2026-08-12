@@ -41,3 +41,6 @@ export {
   WeatherValidationError,
   WeatherMappingError,
 } from './http/errors.js'
+
+export { QueryBuilder } from './builder/query-builder.js'
+export { mapWeatherResponse } from './mapper/weather-mapper.js'
