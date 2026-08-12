@@ -374,6 +374,8 @@ export class QueryBuilder {
     this.checkNumberRange('forecast_days', 0, 16)
     this.checkNumberRange('past_hours', 1, Number.MAX_SAFE_INTEGER)
     this.checkNumberRange('forecast_hours', 1, Number.MAX_SAFE_INTEGER)
+    this.checkNumberRange('tilt', 0, 90)
+    this.checkNumberRange('azimuth', 0, 360)
   }
 
   /** Validates start_date and end_date are in YYYY-MM-DD format. */
