@@ -12,6 +12,7 @@ import {
   Timeformat,
   CellSelection,
   WeatherModel,
+  QueryParams,
 } from '../types/query.js'
 
 import { WeatherValidationError } from '../http/errors.js'
@@ -466,5 +467,44 @@ export class QueryBuilder {
         }
       }
     }
+  }
+
+  /**
+   * Factory method to create a QueryBuilder instance from a QueryParams object.
+   *
+   * @param params - The QueryParams object containing the parameters to set in the QueryBuilder.
+   * @returns A new QueryBuilder instance with the provided parameters set.
+   */
+  static from(params: QueryParams): QueryBuilder {
+    const builder = new QueryBuilder()
+
+    // Set required parameters
+    builder.latitude(params.latitude)
+    builder.longitude(params.longitude)
+
+    // Set optional parameters if they exist
+    if (params.elevation !== undefined) builder.elevation(params.elevation)
+    if (params.hourly) builder.hourly(params.hourly)
+    if (params.daily) builder.daily(params.daily)
+    if (params.current) builder.current(params.current)
+    if (params.minutely_15) builder.minutely15(params.minutely_15)
+    if (params.temperature_unit) builder.temperatureUnit(params.temperature_unit)
+    if (params.wind_speed_unit) builder.windSpeedUnit(params.wind_speed_unit)
+    if (params.precipitation_unit) builder.precipitationUnit(params.precipitation_unit)
+    if (params.timeformat) builder.timeFormat(params.timeformat)
+    if (params.timezone) builder.timezone(params.timezone)
+    if (params.past_days !== undefined) builder.pastDays(params.past_days)
+    if (params.forecast_days !== undefined) builder.forecastDays(params.forecast_days)
+    if (params.past_hours !== undefined) builder.pastHours(params.past_hours)
+    if (params.forecast_hours !== undefined) builder.forecastHours(params.forecast_hours)
+    if (params.start_date) builder.startDate(params.start_date)
+    if (params.end_date) builder.endDate(params.end_date)
+    if (params.tilt !== undefined) builder.tilt(params.tilt)
+    if (params.azimuth !== undefined) builder.azimuth(params.azimuth)
+    if (params.cell_selection) builder.cellSelection(params.cell_selection)
+    if (params.apikey) builder.apiKey(params.apikey)
+    if (params.models) builder.models(params.models)
+
+    return builder
   }
 }
