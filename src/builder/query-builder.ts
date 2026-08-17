@@ -507,4 +507,14 @@ export class QueryBuilder {
 
     return builder
   }
+
+  /**
+   * Factory method to build query parameters directly from a QueryParams object.
+   *
+   * @param params - The QueryParams object containing the parameters to set.
+   * @returns The built and validated query parameters as a plain string map.
+   */
+  static buildFrom(params: QueryParams): Record<string, string> {
+    return QueryBuilder.from(params).build()
+  }
 }
