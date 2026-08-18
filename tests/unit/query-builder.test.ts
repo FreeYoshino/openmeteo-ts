@@ -721,5 +721,16 @@ describe('QueryBuilder', () => {
         expect(result.hourly).toBe('temperature_2m')
       })
     })
+
+    describe('deferred validation', () => {
+      it('should not throw during from()', () => {
+        expect(() => QueryBuilder.from({ latitude: 999, longitude: 0 })).not.toThrow()
+      })
+
+      it('should throw during build() if parameters are invalid', () => {
+        const builder = QueryBuilder.from({ latitude: 999, longitude: 0 })
+        expect(() => builder.build()).toThrow(WeatherValidationError)
+      })
+    })
   })
 })
