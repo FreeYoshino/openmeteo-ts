@@ -669,5 +669,57 @@ describe('QueryBuilder', () => {
         expect(result.past_days).toBeUndefined()
       })
     })
+
+    describe('zero value handling)', () => {
+      it('should preserve elevation = 0 when provided in the input object', () => {
+        const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006, elevation: 0 })
+        const result = builder.build()
+
+        expect(result.elevation).toBe('0')
+      })
+
+      it('should preserve pastDays = 0 when provided in the input object', () => {
+        const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006, pastDays: 0 })
+        const result = builder.build()
+
+        expect(result.past_days).toBe('0')
+      })
+
+      it('should preserve forecastDays = 0 when provided in the input object', () => {
+        const builder = QueryBuilder.from({
+          latitude: 40.7128,
+          longitude: -74.006,
+          forecastDays: 0,
+        })
+        const result = builder.build()
+
+        expect(result.forecast_days).toBe('0')
+      })
+
+      it('should preserve tilt = 0 when provided in the input object', () => {
+        const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006, tilt: 0 })
+        const result = builder.build()
+
+        expect(result.tilt).toBe('0')
+      })
+
+      it('should preserve azimuth = 0 when provided in the input object', () => {
+        const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006, azimuth: 0 })
+        const result = builder.build()
+
+        expect(result.azimuth).toBe('0')
+      })
+    })
+
+    describe('fluent chaining', () => {
+      it('should allow further method chaining after from()', () => {
+        const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006 })
+        const result = builder.hourly(['temperature_2m']).build()
+
+        expect(result.latitude).toBe('40.7128')
+        expect(result.longitude).toBe('-74.006')
+        expect(result.hourly).toBe('temperature_2m')
+      })
+    })
   })
 })
