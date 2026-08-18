@@ -758,5 +758,30 @@ describe('QueryBuilder', () => {
         expect(result.longitude).toBe('-74.006,-118.2437')
       })
     })
+
+    describe('validation', () => {
+      it('should throw on out-of-range latitude', () => {
+        expect(() => QueryBuilder.buildFrom({ latitude: 999, longitude: 0 })).toThrow(
+          WeatherValidationError,
+        )
+      })
+    })
+
+    describe('equality with from() + build()', () => {
+      it('should produce the same result as from() + build()', () => {
+        const resultFromBuild = QueryBuilder.from({
+          latitude: 40.7128,
+          longitude: -74.006,
+          hourly: ['temperature_2m', 'relative_humidity_300hPa'],
+        }).build()
+        const resultBuildFrom = QueryBuilder.buildFrom({
+          latitude: 40.7128,
+          longitude: -74.006,
+          hourly: ['temperature_2m', 'relative_humidity_300hPa'],
+        })
+
+        expect(resultFromBuild).toEqual(resultBuildFrom)
+      })
+    })
   })
 })
