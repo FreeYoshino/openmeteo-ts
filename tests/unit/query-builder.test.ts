@@ -645,5 +645,29 @@ describe('QueryBuilder', () => {
         expect(result.longitude).toBe('-74.006,-118.2437')
       })
     })
+
+    describe('optional parameters', () => {
+      it('should set provided parameters from the input object', () => {
+        const builder = QueryBuilder.from({
+          latitude: 40.7128,
+          longitude: -74.006,
+          hourly: ['temperature_2m', 'relative_humidity_300hPa'],
+        })
+        const result = builder.build()
+
+        expect(result.latitude).toBe('40.7128')
+        expect(result.longitude).toBe('-74.006')
+        expect(result.hourly).toBe('temperature_2m,relative_humidity_300hPa')
+      })
+
+      it('should omit parameters not provided in the input object', () => {
+        const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006 })
+        const result = builder.build()
+
+        expect(result.timezone).toBeUndefined()
+        expect(result.hourly).toBeUndefined()
+        expect(result.past_days).toBeUndefined()
+      })
+    })
   })
 })
