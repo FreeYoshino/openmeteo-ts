@@ -759,6 +759,18 @@ describe('QueryBuilder', () => {
           WeatherValidationError,
         )
       })
+
+      it('should throw on non-integer pastDays', () => {
+        expect(() => QueryBuilder.buildFrom({ latitude: 0, longitude: 0, pastDays: 1.5 })).toThrow(
+          WeatherValidationError,
+        )
+      })
+
+      it('should throw on invalid startDate format', () => {
+        expect(() =>
+          QueryBuilder.buildFrom({ latitude: 0, longitude: 0, startDate: '08-18-2026' }),
+        ).toThrow(WeatherValidationError)
+      })
     })
 
     describe('equality with from() + build()', () => {
