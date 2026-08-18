@@ -618,4 +618,32 @@ describe('QueryBuilder', () => {
       })
     })
   })
+
+  describe('from() static method', () => {
+    describe('return value', () => {
+      it('should return a new instance of QueryBuilder', () => {
+        const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006 })
+        expect(builder).toBeInstanceOf(QueryBuilder)
+      })
+    })
+
+    describe('required parameters', () => {
+      it('should set scalar latitude and longitude values from the input object', () => {
+        const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006 })
+        const result = builder.build()
+        expect(result.latitude).toBe('40.7128')
+        expect(result.longitude).toBe('-74.006')
+      })
+
+      it('should set array latitude and longitude values from the input object', () => {
+        const builder = QueryBuilder.from({
+          latitude: [40.7128, 34.0522],
+          longitude: [-74.006, -118.2437],
+        })
+        const result = builder.build()
+        expect(result.latitude).toBe('40.7128,34.0522')
+        expect(result.longitude).toBe('-74.006,-118.2437')
+      })
+    })
+  })
 })
