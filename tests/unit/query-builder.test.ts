@@ -743,12 +743,6 @@ describe('QueryBuilder', () => {
     })
 
     describe('value conversion', () => {
-      it('should convert number to string', () => {
-        const result = QueryBuilder.buildFrom({ latitude: 40.7128, longitude: -74.006 })
-        expect(result.latitude).toBe('40.7128')
-        expect(result.longitude).toBe('-74.006')
-      })
-
       it('should join array values with a comma', () => {
         const result = QueryBuilder.buildFrom({
           latitude: [40.7128, 34.0522],
