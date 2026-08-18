@@ -12,7 +12,11 @@ import type {
 } from './variables.js'
 
 /**
- * Open-Meteo Weather Forecast API Query Parameters
+ * Open-Meteo Weather Forecast API Query Parameters.
+ *
+ * Field names follow the TypeScript camelCase convention. The fluent
+ * `QueryBuilder` maps them to the API's snake_case query parameter names at
+ * the serialization boundary.
  */
 export interface QueryParams {
   /**
@@ -92,9 +96,9 @@ export interface QueryParams {
    *
    * @example
    * // Request 15-minute temperature and precipitation
-   * minutely_15: ['temperature_2m', 'precipitation']
+   * minutely15: ['temperature_2m', 'precipitation']
    */
-  minutely_15?: Minutely15WeatherVariables[]
+  minutely15?: Minutely15WeatherVariables[]
 
   /**
    * The unit of temperature to be used in the response.
@@ -103,7 +107,7 @@ export interface QueryParams {
    *
    * @default 'celsius' - Use Celsius as the default temperature unit.
    */
-  temperature_unit?: TemperatureUnit
+  temperatureUnit?: TemperatureUnit
 
   /**
    * The unit of wind speed to be used in the response.
@@ -112,7 +116,7 @@ export interface QueryParams {
    *
    * @default 'kmh' - Use kilometers per hour as the default wind speed unit.
    */
-  wind_speed_unit?: WindSpeedUnit
+  windSpeedUnit?: WindSpeedUnit
 
   /**
    * The unit of precipitation to be used in the response.
@@ -121,7 +125,7 @@ export interface QueryParams {
    *
    * @default 'mm' - Use millimeters as the default precipitation unit.
    */
-  precipitation_unit?: PrecipitationUnit
+  precipitationUnit?: PrecipitationUnit
 
   /**
    * The format of the time values in the response.
@@ -130,7 +134,7 @@ export interface QueryParams {
    *
    * @default 'iso8601' - Use ISO 8601 format as the default time format.
    */
-  timeformat?: Timeformat
+  timeFormat?: Timeformat
 
   /**
    * The timezone for the time values in the response.
@@ -147,14 +151,14 @@ export interface QueryParams {
   /**
    * The number of past days to include in the response.
    *
-   * - If `past_days` is set, historical data for previous days (e.g., yesterday or the day before) is also returned.
+   * - If `pastDays` is set, historical data for previous days (e.g., yesterday or the day before) is also returned.
    *
    * @default 0 - Do not include any past data.
    *
    * @minimum 0
    * @maximum 92
    */
-  past_days?: number
+  pastDays?: number
 
   /**
    * The number of forecast days to include in the response.
@@ -164,33 +168,33 @@ export interface QueryParams {
    * @minimum 0
    * @maximum 16
    */
-  forecast_days?: number
+  forecastDays?: number
 
   /**
    * The number of hourly forecast timesteps to include in the response.
    */
-  past_hours?: number
+  pastHours?: number
 
   /**
    * The number of future hourly forecast timesteps to include in the response.
    */
-  forecast_hours?: number
+  forecastHours?: number
 
   /**
    * Start date of the time interval in ISO 8601 format.
    *
    * @example
-   * start_date: '2023-01-01'
+   * startDate: '2023-01-01'
    */
-  start_date?: string
+  startDate?: string
 
   /**
    * End date of the time interval in ISO 8601 format.
    *
    * @example
-   * end_date: '2023-01-01'
+   * endDate: '2023-01-01'
    */
-  end_date?: string
+  endDate?: string
 
   /**
    * Slope tilt in degrees for global_tilted_irradiance calculation.
@@ -211,12 +215,12 @@ export interface QueryParams {
    *
    * {@link CellSelection} defines the possible values for this parameter.
    */
-  cell_selection?: CellSelection
+  cellSelection?: CellSelection
 
   /**
    * Only required for commercial subscriptions.
    */
-  apikey?: string
+  apiKey?: string
 
   /**
    * Manually select one or more weather models.
