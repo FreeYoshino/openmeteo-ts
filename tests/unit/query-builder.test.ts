@@ -670,7 +670,7 @@ describe('QueryBuilder', () => {
       })
     })
 
-    describe('zero value handling)', () => {
+    describe('zero value handling', () => {
       it('should preserve elevation = 0 when provided in the input object', () => {
         const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006, elevation: 0 })
         const result = builder.build()
@@ -743,7 +743,7 @@ describe('QueryBuilder', () => {
     })
 
     describe('value conversion', () => {
-      it('should conver number to string', () => {
+      it('should convert number to string', () => {
         const result = QueryBuilder.buildFrom({ latitude: 40.7128, longitude: -74.006 })
         expect(result.latitude).toBe('40.7128')
         expect(result.longitude).toBe('-74.006')
