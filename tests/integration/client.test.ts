@@ -93,4 +93,47 @@ describe('WeatherClient', () => {
       })
     })
   })
+
+  describe('query params forwarded to fetch URL', () => {
+    it('should forward query parameters', async () => {
+      const fetchMock = vi.fn().mockResolvedValue({
+        ok: true,
+        json: () =>
+          Promise.resolve(makeRawWeatherResponse({ latitude: 40.7128, longitude: -74.006 })),
+      })
+      vi.stubGlobal('fetch', fetchMock)
+
+      const client = new WeatherClient(new HttpClient())
+      const query = new QueryBuilder().latitude(40.7128).longitude(-74.006).build()
+      await client.fetchWeather(query)
+
+      const calledUrl = fetchMock.mock.calls[0]![0]
+      expect(calledUrl).toContain('latitude=40.7128')
+      expect(calledUrl).toContain('longitude=-74.006')
+    })
+
+    it('should forward optional query parameters too', async () => {
+      const fetchMock = vi.fn().mockResolvedValue({
+        ok: true,
+        json: () =>
+          Promise.resolve(makeRawWeatherResponse({ latitude: 40.7128, longitude: -74.006 })),
+      })
+      vi.stubGlobal('fetch', fetchMock)
+
+      const client = new WeatherClient(new HttpClient())
+      const query = new QueryBuilder()
+        .latitude(40.7128)
+        .longitude(-74.006)
+        .elevation(10)
+        .hourly(['temperature_2m'])
+        .build()
+      await client.fetchWeather(query)
+
+      const calledUrl = fetchMock.mock.calls[0]![0]
+      expect(calledUrl).toContain('latitude=40.7128')
+      expect(calledUrl).toContain('longitude=-74.006')
+      expect(calledUrl).toContain('elevation=10')
+      expect(calledUrl).toContain('hourly=temperature_2m')
+    })
+  })
 })
