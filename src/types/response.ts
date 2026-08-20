@@ -118,7 +118,7 @@ export interface RawWeatherResponse {
   /**
    * Minutely (15-minute interval) weather data for the requested time range.
    *
-   * Included only when {@link QueryParams.minutely_15} parameters are requested.
+   * Included only when {@link QueryParams.minutely15} parameters are requested.
    */
   minutely_15?: RawMinutelyWeatherResponse
 
@@ -348,7 +348,7 @@ export interface WeatherResponse {
    * Each element represents a single 15-minute timestep with typed weather variables.
    * The `time` field has been converted from an ISO 8601 string to a native {@link Date} object.
    *
-   * Included only when {@link QueryParams.minutely_15} parameters are requested.
+   * Included only when {@link QueryParams.minutely15} parameters are requested.
    */
   minutely_15?: Minutely15WeatherConditions[]
 

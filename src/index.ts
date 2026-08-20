@@ -27,6 +27,7 @@ export type {
   DailyWeatherConditions,
   CurrentWeatherConditions,
   Minutely15WeatherConditions,
+  RawTimedBlock,
 } from './types/response.js'
 
 export type { WeatherAnalyzer } from './types/analyzer.js'
@@ -44,3 +45,4 @@ export {
 
 export { QueryBuilder } from './builder/query-builder.js'
 export { mapWeatherResponse } from './mapper/weather-mapper.js'
+export { WeatherClient } from './client.js'

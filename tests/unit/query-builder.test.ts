@@ -618,4 +618,176 @@ describe('QueryBuilder', () => {
       })
     })
   })
+
+  describe('from() static method', () => {
+    describe('return value', () => {
+      it('should return a new instance of QueryBuilder', () => {
+        const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006 })
+        expect(builder).toBeInstanceOf(QueryBuilder)
+      })
+    })
+
+    describe('required parameters', () => {
+      it('should set scalar latitude and longitude values from the input object', () => {
+        const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006 })
+        const result = builder.build()
+        expect(result.latitude).toBe('40.7128')
+        expect(result.longitude).toBe('-74.006')
+      })
+
+      it('should set array latitude and longitude values from the input object', () => {
+        const builder = QueryBuilder.from({
+          latitude: [40.7128, 34.0522],
+          longitude: [-74.006, -118.2437],
+        })
+        const result = builder.build()
+        expect(result.latitude).toBe('40.7128,34.0522')
+        expect(result.longitude).toBe('-74.006,-118.2437')
+      })
+    })
+
+    describe('optional parameters', () => {
+      it('should set provided parameters from the input object', () => {
+        const builder = QueryBuilder.from({
+          latitude: 40.7128,
+          longitude: -74.006,
+          hourly: ['temperature_2m', 'relative_humidity_300hPa'],
+        })
+        const result = builder.build()
+
+        expect(result.latitude).toBe('40.7128')
+        expect(result.longitude).toBe('-74.006')
+        expect(result.hourly).toBe('temperature_2m,relative_humidity_300hPa')
+      })
+
+      it('should omit parameters not provided in the input object', () => {
+        const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006 })
+        const result = builder.build()
+
+        expect(result.timezone).toBeUndefined()
+        expect(result.hourly).toBeUndefined()
+        expect(result.past_days).toBeUndefined()
+      })
+    })
+
+    describe('zero value handling', () => {
+      it('should preserve elevation = 0 when provided in the input object', () => {
+        const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006, elevation: 0 })
+        const result = builder.build()
+
+        expect(result.elevation).toBe('0')
+      })
+
+      it('should preserve pastDays = 0 when provided in the input object', () => {
+        const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006, pastDays: 0 })
+        const result = builder.build()
+
+        expect(result.past_days).toBe('0')
+      })
+
+      it('should preserve forecastDays = 0 when provided in the input object', () => {
+        const builder = QueryBuilder.from({
+          latitude: 40.7128,
+          longitude: -74.006,
+          forecastDays: 0,
+        })
+        const result = builder.build()
+
+        expect(result.forecast_days).toBe('0')
+      })
+
+      it('should preserve tilt = 0 when provided in the input object', () => {
+        const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006, tilt: 0 })
+        const result = builder.build()
+
+        expect(result.tilt).toBe('0')
+      })
+
+      it('should preserve azimuth = 0 when provided in the input object', () => {
+        const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006, azimuth: 0 })
+        const result = builder.build()
+
+        expect(result.azimuth).toBe('0')
+      })
+    })
+
+    describe('fluent chaining', () => {
+      it('should allow further method chaining after from()', () => {
+        const builder = QueryBuilder.from({ latitude: 40.7128, longitude: -74.006 })
+        const result = builder.hourly(['temperature_2m']).build()
+
+        expect(result.latitude).toBe('40.7128')
+        expect(result.longitude).toBe('-74.006')
+        expect(result.hourly).toBe('temperature_2m')
+      })
+    })
+
+    describe('deferred validation', () => {
+      it('should not throw during from()', () => {
+        expect(() => QueryBuilder.from({ latitude: 999, longitude: 0 })).not.toThrow()
+      })
+
+      it('should throw during build() if parameters are invalid', () => {
+        const builder = QueryBuilder.from({ latitude: 999, longitude: 0 })
+        expect(() => builder.build()).toThrow(WeatherValidationError)
+      })
+    })
+  })
+
+  describe('buildFrom() static method', () => {
+    describe('return value', () => {
+      it('should return a plain string map object', () => {
+        const result = QueryBuilder.buildFrom({ latitude: 40.7128, longitude: -74.006 })
+        expect(result).toEqual({ latitude: '40.7128', longitude: '-74.006' })
+      })
+    })
+
+    describe('value conversion', () => {
+      it('should join array values with a comma', () => {
+        const result = QueryBuilder.buildFrom({
+          latitude: [40.7128, 34.0522],
+          longitude: [-74.006, -118.2437],
+        })
+        expect(result.latitude).toBe('40.7128,34.0522')
+        expect(result.longitude).toBe('-74.006,-118.2437')
+      })
+    })
+
+    describe('validation', () => {
+      it('should throw on out-of-range latitude', () => {
+        expect(() => QueryBuilder.buildFrom({ latitude: 999, longitude: 0 })).toThrow(
+          WeatherValidationError,
+        )
+      })
+
+      it('should throw on non-integer pastDays', () => {
+        expect(() => QueryBuilder.buildFrom({ latitude: 0, longitude: 0, pastDays: 1.5 })).toThrow(
+          WeatherValidationError,
+        )
+      })
+
+      it('should throw on invalid startDate format', () => {
+        expect(() =>
+          QueryBuilder.buildFrom({ latitude: 0, longitude: 0, startDate: '08-18-2026' }),
+        ).toThrow(WeatherValidationError)
+      })
+    })
+
+    describe('equality with from() + build()', () => {
+      it('should produce the same result as from() + build()', () => {
+        const resultFromBuild = QueryBuilder.from({
+          latitude: 40.7128,
+          longitude: -74.006,
+          hourly: ['temperature_2m', 'relative_humidity_300hPa'],
+        }).build()
+        const resultBuildFrom = QueryBuilder.buildFrom({
+          latitude: 40.7128,
+          longitude: -74.006,
+          hourly: ['temperature_2m', 'relative_humidity_300hPa'],
+        })
+
+        expect(resultFromBuild).toEqual(resultBuildFrom)
+      })
+    })
+  })
 })

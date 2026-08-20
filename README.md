@@ -93,7 +93,9 @@ src/
 
 ## 開發狀態
 
-🚧 **早期開發階段** — Phase 1（核心 SDK）進行中。
+✅ **Phase 1（核心 SDK）已完成** — 型別定義層、HttpClient、QueryBuilder、WeatherMapper、WeatherClient 均已實作並通過測試。
+
+🔲 **Phase 2（業務分析器）規劃中**。
 
 ## 技術棧
 

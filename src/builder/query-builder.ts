@@ -12,6 +12,7 @@ import {
   Timeformat,
   CellSelection,
   WeatherModel,
+  QueryParams,
 } from '../types/query.js'
 
 import { WeatherValidationError } from '../http/errors.js'
@@ -466,5 +467,54 @@ export class QueryBuilder {
         }
       }
     }
+  }
+
+  /**
+   * Factory method to create a QueryBuilder instance from a QueryParams object.
+   *
+   * @param params - The QueryParams object containing the parameters to set in the QueryBuilder.
+   * @returns A new QueryBuilder instance with the provided parameters set.
+   */
+  static from(params: QueryParams): QueryBuilder {
+    const builder = new QueryBuilder()
+
+    // Set required parameters
+    builder.latitude(params.latitude)
+    builder.longitude(params.longitude)
+
+    // Set optional parameters if they exist
+    if (params.elevation !== undefined) builder.elevation(params.elevation)
+    if (params.hourly) builder.hourly(params.hourly)
+    if (params.daily) builder.daily(params.daily)
+    if (params.current) builder.current(params.current)
+    if (params.minutely15) builder.minutely15(params.minutely15)
+    if (params.temperatureUnit) builder.temperatureUnit(params.temperatureUnit)
+    if (params.windSpeedUnit) builder.windSpeedUnit(params.windSpeedUnit)
+    if (params.precipitationUnit) builder.precipitationUnit(params.precipitationUnit)
+    if (params.timeFormat) builder.timeFormat(params.timeFormat)
+    if (params.timezone) builder.timezone(params.timezone)
+    if (params.pastDays !== undefined) builder.pastDays(params.pastDays)
+    if (params.forecastDays !== undefined) builder.forecastDays(params.forecastDays)
+    if (params.pastHours !== undefined) builder.pastHours(params.pastHours)
+    if (params.forecastHours !== undefined) builder.forecastHours(params.forecastHours)
+    if (params.startDate) builder.startDate(params.startDate)
+    if (params.endDate) builder.endDate(params.endDate)
+    if (params.tilt !== undefined) builder.tilt(params.tilt)
+    if (params.azimuth !== undefined) builder.azimuth(params.azimuth)
+    if (params.cellSelection) builder.cellSelection(params.cellSelection)
+    if (params.apiKey) builder.apiKey(params.apiKey)
+    if (params.models) builder.models(params.models)
+
+    return builder
+  }
+
+  /**
+   * Factory method to build query parameters directly from a QueryParams object.
+   *
+   * @param params - The QueryParams object containing the parameters to set.
+   * @returns The built and validated query parameters as a plain string map.
+   */
+  static buildFrom(params: QueryParams): Record<string, string> {
+    return QueryBuilder.from(params).build()
   }
 }
