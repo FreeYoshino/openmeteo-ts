@@ -110,7 +110,7 @@ describe('WeatherClient', () => {
       const query = new QueryBuilder().latitude(40.7128).longitude(-74.006).build()
       await client.fetchWeather(query)
 
-      const calledUrl = fetchMock.mock.calls[0]![0]
+      const calledUrl = fetchMock.mock.calls[0]?.[0]
       expect(calledUrl).toContain('latitude=40.7128')
       expect(calledUrl).toContain('longitude=-74.006')
     })
@@ -132,7 +132,7 @@ describe('WeatherClient', () => {
         .build()
       await client.fetchWeather(query)
 
-      const calledUrl = fetchMock.mock.calls[0]![0]
+      const calledUrl = fetchMock.mock.calls[0]?.[0]
       expect(calledUrl).toContain('latitude=40.7128')
       expect(calledUrl).toContain('longitude=-74.006')
       expect(calledUrl).toContain('elevation=10')
@@ -241,7 +241,7 @@ describe('WeatherClient', () => {
       expect(analyze).toHaveBeenCalledTimes(1)
 
       // Check that the analyzer received the mapped data, not the raw response
-      const received = analyze.mock.calls[0]![0]
+      const received = analyze.mock.calls[0]?.[0]
       expect(received).toMatchObject({
         hourly: [{ time: new Date('2024-01-01T00:00') }, { time: new Date('2024-01-01T01:00') }],
       })
@@ -302,7 +302,7 @@ describe('WeatherClient', () => {
       await client.fetchWeather(query)
 
       expect(order).toEqual(['first', 'second']) // Check that analyzers were called in the correct order
-      expect(secondAnalyze.mock.calls[0]![0]).toHaveProperty('first', true) // Check that the second analyzer received the modified data from the first
+      expect(secondAnalyze.mock.calls[0]?.[0]).toHaveProperty('first', true) // Check that the second analyzer received the modified data from the first
     })
   })
 })
