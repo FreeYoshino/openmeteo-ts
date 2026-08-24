@@ -365,4 +365,53 @@ describe('createFleetRiskAnalyzer', () => {
       expect(result.fleetRisk[0]?.riskLevel).toBe('HIGH')
     })
   })
+
+  describe('riskFactors', () => {
+    it('should include all risk factors that contributed to the score', () => {
+      const analyzer = createFleetRiskAnalyzer()
+      const data = makeWeatherResponse({
+        hourly: [
+          {
+            time: new Date('2026-01-01T00:00:00Z'),
+            precipitation: 5,
+            wind_speed_10m: 40,
+            temperature_2m: 36,
+            snowfall: 6,
+            visibility: 999,
+            weather_code: 96,
+          },
+        ],
+      })
+      const result = analyzer.analyze(data)
+
+      expect(result.fleetRisk[0]?.riskFactors).toEqual([
+        'Moderate Rain',
+        'Moderate Wind',
+        'Heat',
+        'Heavy Snow',
+        'Low Visibility',
+        'Thunderstorm',
+      ])
+    })
+
+    it('should return an empty array if no risk factors contributed to the score', () => {
+      const analyzer = createFleetRiskAnalyzer()
+      const data = makeWeatherResponse({
+        hourly: [
+          {
+            time: new Date('2026-01-01T00:00:00Z'),
+            precipitation: 0,
+            wind_speed_10m: 0,
+            temperature_2m: 20,
+            snowfall: 0,
+            visibility: 1000,
+            weather_code: 0,
+          },
+        ],
+      })
+      const result = analyzer.analyze(data)
+
+      expect(result.fleetRisk[0]?.riskFactors).toEqual([])
+    })
+  })
 })
