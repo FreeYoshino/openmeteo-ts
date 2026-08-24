@@ -2,6 +2,12 @@
 
 > 零外部依賴、強型別的 TypeScript SDK，包裝 [Open-Meteo](https://open-meteo.com/) 氣象 API，並提供可擴充的業務分析器功能。
 
+## 🎮 線上體驗
+
+不需要安裝任何東西，直接在瀏覽器試試 SDK — 選城市或輸入座標，即時查詢 Open-Meteo 並看到 FleetRiskAnalyzer 的每小時車隊風險評估：
+
+**▶️ [開啟互動式 Playground](https://freeyoshino.github.io/openmeteo-ts/)**
+
 ## 專案動機
 
 在使用 Open-Meteo時，大概會遇到這幾種問題:
