@@ -5,7 +5,7 @@ import type { WeatherResponse } from './response.js'
  *
  * All business extension modules must implement this interface
  */
-export interface WeatherAnalyzer<TExtension = Record<string, unknown>> {
+export interface WeatherAnalyzer<TExtension = unknown> {
   /** Analyzer identifier */
   readonly id: string
 
