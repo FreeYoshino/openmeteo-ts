@@ -80,7 +80,7 @@ src/
 ├── mapper/         # 平行陣列轉換器
 ├── client.ts       # 主編排器
 ├── analyzers/      # 擴充分析器
-│   └── fleet-risk.ts  #  官方範例：車隊風險評估
+│   └── fleet-risk.ts  # 內建範例：車隊風險評估
 └── index.ts        # Public API 統一出入口
 ```
 
@@ -95,7 +95,7 @@ src/
 
 ✅ **Phase 1（核心 SDK）已完成** — 型別定義層、HttpClient、QueryBuilder、WeatherMapper、WeatherClient 均已實作並通過測試。
 
-🔲 **Phase 2（業務分析器）規劃中**。
+✅ **Phase 2（業務分析器）已完成** — 以 `WeatherAnalyzer` 擴充架構實作車隊風險分析器（`createFleetRiskAnalyzer`），支援研究依據的氣象閾值與配置覆寫，並通過單元（數值邊界）與整合（完整管線）測試。`WeatherClient` 同步重構為 builder pattern（`create()` + `use()`），analyzer 的擴充型別在型別層累積保留，無需手動 cast。
 
 ## 技術棧
 
