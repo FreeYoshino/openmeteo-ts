@@ -46,3 +46,13 @@ export {
 export { QueryBuilder } from './builder/query-builder.js'
 export { mapWeatherResponse } from './mapper/weather-mapper.js'
 export { WeatherClient } from './client.js'
+
+// Analyzers
+export { createFleetRiskAnalyzer } from './analyzers/fleet-risk.js'
+
+export type {
+  RiskLevel,
+  FleetRiskData,
+  FleetRiskExtension,
+  FleetRiskThresholds,
+} from './analyzers/fleet-risk.js'
