@@ -1,6 +1,5 @@
 import { describe, it, expect, afterEach, vi } from 'vitest'
 import { WeatherClient } from '../../src/client.js'
-import { HttpClient } from '../../src/http/fetch-client.js'
 import { QueryBuilder } from '../../src/builder/query-builder.js'
 import { makeRawWeatherResponse } from '../helper.js'
 import { WeatherNetworkError, WeatherAPIError, WeatherMappingError } from '../../src/http/errors.js'
@@ -31,7 +30,7 @@ describe('WeatherClient', () => {
         }),
       )
 
-      const client = new WeatherClient(new HttpClient())
+      const client = WeatherClient.create()
       const query = new QueryBuilder().latitude(40.7128).longitude(-74.006).build()
       const result = await client.fetchWeather(query)
 
@@ -59,7 +58,7 @@ describe('WeatherClient', () => {
         }),
       )
 
-      const client = new WeatherClient(new HttpClient())
+      const client = WeatherClient.create()
       const query = new QueryBuilder().latitude(0).longitude(0).build()
       const result = await client.fetchWeather(query)
 
@@ -84,7 +83,7 @@ describe('WeatherClient', () => {
         }),
       )
 
-      const client = new WeatherClient(new HttpClient())
+      const client = WeatherClient.create()
       const query = new QueryBuilder().latitude(0).longitude(0).hourly(['temperature_2m']).build()
       const result = await client.fetchWeather(query)
 
@@ -106,7 +105,7 @@ describe('WeatherClient', () => {
       })
       vi.stubGlobal('fetch', fetchMock)
 
-      const client = new WeatherClient(new HttpClient())
+      const client = WeatherClient.create()
       const query = new QueryBuilder().latitude(40.7128).longitude(-74.006).build()
       await client.fetchWeather(query)
 
@@ -123,7 +122,7 @@ describe('WeatherClient', () => {
       })
       vi.stubGlobal('fetch', fetchMock)
 
-      const client = new WeatherClient(new HttpClient())
+      const client = WeatherClient.create()
       const query = new QueryBuilder()
         .latitude(40.7128)
         .longitude(-74.006)
@@ -144,7 +143,7 @@ describe('WeatherClient', () => {
     it('should propagate WeatherNetworkError when fetch fails', async () => {
       vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Network error')))
 
-      const client = new WeatherClient(new HttpClient())
+      const client = WeatherClient.create()
       const query = new QueryBuilder().latitude(0).longitude(0).build()
 
       await expect(client.fetchWeather(query)).rejects.toThrow(WeatherNetworkError)
@@ -161,7 +160,7 @@ describe('WeatherClient', () => {
         }),
       )
 
-      const client = new WeatherClient(new HttpClient())
+      const client = WeatherClient.create()
       const query = new QueryBuilder().latitude(0).longitude(0).build()
 
       await expect(client.fetchWeather(query)).rejects.toThrow(WeatherAPIError)
@@ -187,7 +186,7 @@ describe('WeatherClient', () => {
         }),
       )
 
-      const client = new WeatherClient(new HttpClient())
+      const client = WeatherClient.create()
       const query = new QueryBuilder().latitude(0).longitude(0).hourly(['temperature_2m']).build()
 
       await expect(client.fetchWeather(query)).rejects.toThrow(WeatherMappingError)
@@ -234,7 +233,7 @@ describe('WeatherClient', () => {
         (data: WeatherResponse) => data as WeatherResponse & Record<string, unknown>,
       )
       const analyzer: WeatherAnalyzer = { id: 'test-analyzer', analyze }
-      const client = new WeatherClient(new HttpClient(), [analyzer])
+      const client = WeatherClient.create().use(analyzer)
 
       await client.fetchWeather(new QueryBuilder().latitude(0).longitude(0).build())
 
@@ -260,7 +259,7 @@ describe('WeatherClient', () => {
         return { ...data, riskLevel: 'HIGH' }
       })
       const analyzer: WeatherAnalyzer<{ riskLevel: string }> = { id: 'risk-analyzer', analyze }
-      const client = new WeatherClient(new HttpClient(), [analyzer])
+      const client = WeatherClient.create().use(analyzer)
       const query = new QueryBuilder().latitude(0).longitude(0).build()
 
       const result = (await client.fetchWeather(query)) as WeatherResponse & { riskLevel: string }
@@ -296,13 +295,35 @@ describe('WeatherClient', () => {
         analyze: secondAnalyze,
       }
 
-      const client = new WeatherClient(new HttpClient(), [firstAnalyzer, secondAnalyzer])
+      const client = WeatherClient.create().use(firstAnalyzer).use(secondAnalyzer)
       const query = new QueryBuilder().latitude(0).longitude(0).build()
 
       await client.fetchWeather(query)
 
       expect(order).toEqual(['first', 'second']) // Check that analyzers were called in the correct order
       expect(secondAnalyze.mock.calls[0]?.[0]).toHaveProperty('first', true) // Check that the second analyzer received the modified data from the first
+    })
+
+    it('should not mutate the original client when use is called', async () => {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: true,
+          json: () => Promise.resolve(makeRawWeatherResponse({ latitude: 0, longitude: 0 })),
+        }),
+      )
+
+      const analyze = vi.fn((data: WeatherResponse) => ({ ...data, marker: true }))
+      const analyzer: WeatherAnalyzer<{ marker: boolean }> = { id: 'marker', analyze }
+
+      const base = WeatherClient.create()
+      const chained = base.use(analyzer)
+
+      await base.fetchWeather(new QueryBuilder().latitude(0).longitude(0).build())
+      expect(analyze).not.toHaveBeenCalled()
+
+      await chained.fetchWeather(new QueryBuilder().latitude(0).longitude(0).build())
+      expect(analyze).toHaveBeenCalledTimes(1)
     })
   })
 })
