@@ -319,4 +319,50 @@ describe('createFleetRiskAnalyzer', () => {
       })
     })
   })
+
+  describe('risk level mapping', () => {
+    it('should map score 1 to low risk', () => {
+      const analyzer = createFleetRiskAnalyzer()
+      const data = makeWeatherResponse({
+        hourly: [{ time: new Date('2026-01-01T00:00:00Z'), precipitation: 5 }],
+      })
+      const result = analyzer.analyze(data)
+
+      expect(result.fleetRisk[0]?.riskScore).toBe(1)
+      expect(result.fleetRisk[0]?.riskLevel).toBe('LOW')
+    })
+
+    it('should map score 2 to medium risk', () => {
+      const analyzer = createFleetRiskAnalyzer()
+      const data = makeWeatherResponse({
+        hourly: [{ time: new Date('2026-01-01T00:00:00Z'), temperature_2m: 36 }],
+      })
+      const result = analyzer.analyze(data)
+
+      expect(result.fleetRisk[0]?.riskScore).toBe(2)
+      expect(result.fleetRisk[0]?.riskLevel).toBe('MEDIUM')
+    })
+
+    it('should map score 4 to medium risk', () => {
+      const analyzer = createFleetRiskAnalyzer()
+      const data = makeWeatherResponse({
+        hourly: [{ time: new Date('2026-01-01T00:00:00Z'), weather_code: 96 }],
+      })
+      const result = analyzer.analyze(data)
+
+      expect(result.fleetRisk[0]?.riskScore).toBe(4)
+      expect(result.fleetRisk[0]?.riskLevel).toBe('MEDIUM')
+    })
+
+    it('should map score 5 to high risk', () => {
+      const analyzer = createFleetRiskAnalyzer()
+      const data = makeWeatherResponse({
+        hourly: [{ time: new Date('2026-01-01T00:00:00Z'), weather_code: 96, precipitation: 5 }],
+      })
+      const result = analyzer.analyze(data)
+
+      expect(result.fleetRisk[0]?.riskScore).toBe(5)
+      expect(result.fleetRisk[0]?.riskLevel).toBe('HIGH')
+    })
+  })
 })
