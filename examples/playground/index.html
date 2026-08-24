@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>openmeteo-ts 車隊風險 Playground</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --border: #334155;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 32px 16px;
+    }
+    .container { max-width: 1080px; margin: 0 auto; }
+    h1 { font-size: 1.6rem; margin: 0 0 4px; }
+    .subtitle { color: var(--muted); margin: 0 0 24px; font-size: 0.95rem; }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 0.8rem; color: var(--muted); }
+    .field input, .field select {
+      background: #0f172a;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.95rem;
+      min-width: 120px;
+    }
+    button {
+      background: var(--accent);
+      color: #0f172a;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 18px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    #status { color: var(--muted); font-size: 0.9rem; min-height: 1.2em; margin-bottom: 12px; }
+    table { width: 100%; border-collapse: collapse; background: var(--panel); border-radius: 12px; overflow: hidden; }
+    th, td { padding: 10px 12px; text-align: left; font-size: 0.9rem; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-weight: 500; background: #16213a; position: sticky; top: 0; }
+    tr:last-child td { border-bottom: none; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-weight: 700; font-size: 0.8rem; }
+    .LOW { background: #166534; color: #bbf7d0; }
+    .MEDIUM { background: #854d0e; color: #fde68a; }
+    .HIGH { background: #7f1d1d; color: #fecaca; }
+    .factors { color: var(--muted); font-size: 0.82rem; max-width: 260px; }
+    .error { color: #f87171; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🚛 openmeteo-ts 車隊風險 Playground</h1>
+    <p class="subtitle">以 openmeteo-ts@0.1.0 即時查詢 Open-Meteo，並透過 FleetRiskAnalyzer 評估每小時車隊營運風險</p>
+
+    <div class="controls">
+      <div class="field">
+        <label>預設城市</label>
+        <select id="city">
+          <option value="25.033,121.565" selected>台北</option>
+          <option value="22.627,120.301">高雄</option>
+          <option value="23.992,121.601">花蓮</option>
+          <option value="custom">自訂座標</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>緯度 latitude</label>
+        <input id="lat" type="number" step="0.001" value="25.033" />
+      </div>
+      <div class="field">
+        <label>經度 longitude</label>
+        <input id="lng" type="number" step="0.001" value="121.565" />
+      </div>
+      <button id="run">查詢風險</button>
+    </div>
+
+    <div id="status">載入 SDK…</div>
+    <div id="result"></div>
+  </div>
+
+  <script type="module">
+    import {
+      QueryBuilder,
+      WeatherClient,
+      createFleetRiskAnalyzer,
+    } from 'https://esm.sh/openmeteo-ts@0.1.0'
+
+    const citySelect = document.getElementById('city')
+    const latInput = document.getElementById('lat')
+    const lngInput = document.getElementById('lng')
+    const runBtn = document.getElementById('run')
+    const statusEl = document.getElementById('status')
+    const resultEl = document.getElementById('result')
+
+    statusEl.textContent = 'SDK 已載入（openmeteo-ts@0.1.0）✅ 可開始查詢'
+
+    citySelect.addEventListener('change', () => {
+      if (citySelect.value === 'custom') return
+      const [lat, lng] = citySelect.value.split(',')
+      latInput.value = lat
+      lngInput.value = lng
+    })
+
+    function riskLevelClass(level) {
+      return level ?? ''
+    }
+
+    function render(rows) {
+      if (!rows.length) {
+        resultEl.innerHTML = '<p>查無 hourly 資料</p>'
+        return
+      }
+      const header = `
+        <tr>
+          <th>時間</th><th>溫度</th><th>風速</th><th>降雨</th>
+          <th>降雪</th><th>能見度</th><th>天氣碼</th>
+          <th>風險等級</th><th>分數</th><th>風險因素</th>
+        </tr>`
+      const body = rows
+        .map(({ h, risk }) => {
+          const level = risk?.riskLevel ?? ''
+          const factors = (risk?.riskFactors ?? []).join('、') || '—'
+          return `
+            <tr>
+              <td>${h.time.toLocaleString('zh-TW', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'numeric' })}</td>
+              <td>${h.temperature_2m ?? '—'}°C</td>
+              <td>${h.wind_speed_10m ?? '—'} km/h</td>
+              <td>${h.precipitation ?? '—'} mm</td>
+              <td>${h.snowfall ?? '—'} cm</td>
+              <td>${h.visibility ?? '—'} m</td>
+              <td>${h.weather_code ?? '—'}</td>
+              <td><span class="badge ${riskLevelClass(level)}">${level || '—'}</span></td>
+              <td>${risk?.riskScore ?? '—'}</td>
+              <td class="factors">${factors}</td>
+            </tr>`
+        })
+        .join('')
+      resultEl.innerHTML = `<table>${header}${body}</table>`
+    }
+
+    runBtn.addEventListener('click', async () => {
+      runBtn.disabled = true
+      statusEl.textContent = '查詢中…'
+      try {
+        const query = new QueryBuilder()
+          .latitude(Number(latInput.value))
+          .longitude(Number(lngInput.value))
+          .hourly([
+            'temperature_2m',
+            'wind_speed_10m',
+            'precipitation',
+            'snowfall',
+            'visibility',
+            'weather_code',
+          ])
+          .forecastDays(2)
+          .build()
+
+        const client = WeatherClient.create().use(createFleetRiskAnalyzer())
+        const result = await client.fetchWeather(query)
+
+        const hourly = result.hourly ?? []
+        const rows = hourly.map((h, i) => ({ h, risk: result.fleetRisk[i] }))
+
+        statusEl.textContent = `✅ 成功取得 ${rows.length} 筆逐時資料（${result.timezone}）`
+        render(rows)
+      } catch (err) {
+        statusEl.innerHTML = `<span class="error">❌ 查詢失敗：${err?.message ?? err}</span>`
+        resultEl.innerHTML = ''
+      } finally {
+        runBtn.disabled = false
+      }
+    })
+  </script>
+</body>
+</html>
