@@ -2,6 +2,12 @@
 
 > 零外部依賴、強型別的 TypeScript SDK，包裝 [Open-Meteo](https://open-meteo.com/) 氣象 API，並提供可擴充的業務分析器功能。
 
+## 🎮 線上體驗
+
+不需要安裝任何東西，直接在瀏覽器試試 SDK — 選城市或輸入座標，即時查詢 Open-Meteo 並看到 FleetRiskAnalyzer 的每小時車隊風險評估：
+
+**▶️ [開啟互動式 Playground](https://freeyoshino.github.io/openmeteo-ts/)**
+
 ## 專案動機
 
 在使用 Open-Meteo時，大概會遇到這幾種問題:
@@ -67,6 +73,81 @@ WeatherClient（主編排器）
 | 擴充功能 | Analyzer 介面模式 | 開放/封閉原則：對擴充開放，對修改封閉 |
 | 測試策略 | Unit + Integration 分層 | 單元測試保證模組正確性，整合測試驗證管線協作 |
 
+## 安裝
+
+```bash
+npm install openmeteo-ts
+```
+
+## 快速開始
+
+```ts
+import {
+  QueryBuilder,
+  WeatherClient,
+  createFleetRiskAnalyzer,
+} from 'openmeteo-ts'
+
+// 1. 建立查詢：台北車隊營運範圍，要求每小時的溫度、風速、降雨、能見度與天氣代碼
+const query = new QueryBuilder()
+  .latitude(25.033)
+  .longitude(121.565)
+  .hourly([
+    'temperature_2m',
+    'wind_speed_10m',
+    'precipitation',
+    'visibility',
+    'weather_code',
+  ])
+  .build()
+
+// 2. 掛載車隊風險分析器（型別自動保留，無需手動 cast）
+const client = WeatherClient.create().use(createFleetRiskAnalyzer())
+
+// 3. 取回結果：result.fleetRisk 已型別化，與 hourly 依 index 對齊
+const result = await client.fetchWeather(query)
+
+for (const risk of result.fleetRisk) {
+  console.log(risk.riskLevel, risk.riskScore, risk.riskFactors)
+}
+```
+
+## 自訂分析器
+
+任何業務邏輯都可以透過實作 `WeatherAnalyzer<TExtension>` 介面注入，不必修改 SDK 原始碼：
+
+```ts
+import type { WeatherAnalyzer, WeatherResponse } from 'openmeteo-ts'
+
+// 作物壓力分析器：回傳每小時的熱逆境指數
+const heatStressAnalyzer: WeatherAnalyzer<{ heatStress: number[] }> = {
+  id: 'heat-stress-analyzer',
+  analyze(data: WeatherResponse) {
+    const heatStress =
+      data.hourly?.map((h) => Math.max(0, (h.temperature_2m ?? 0) - 32) * 2) ?? []
+    return { ...data, heatStress }
+  },
+}
+
+const client = WeatherClient.create().use(heatStressAnalyzer)
+const result = await client.fetchWeather(query)
+// result.heatStress 已型別化
+```
+
+## API 總覽
+
+| 匯出 | 型別 | 說明 |
+|------|------|------|
+| `WeatherClient` | class | 主編排器；`create()` 建立、`use()` 掛 analyzer |
+| `QueryBuilder` | class | 強型別查詢參數建構 |
+| `HttpClient` | class | 原生 fetch 封裝（可注入自訂 baseUrl / timeout） |
+| `mapWeatherResponse` | function | 平行陣列 → 物件陣列轉換 |
+| `createFleetRiskAnalyzer` | function | 車隊風險分析器工廠（可傳閾值覆寫） |
+| `WeatherError` 及 4 個子類 | class | 錯誤階層：`WeatherAPIError` / `WeatherNetworkError` / `WeatherValidationError` / `WeatherMappingError` |
+| `WeatherAnalyzer` | type | 分析器介面 |
+| `WeatherResponse` 等 | type | 正規化回應型別 |
+| `RiskLevel` / `FleetRiskData` / `FleetRiskExtension` / `FleetRiskThresholds` | type | FleetRisk 相關型別 |
+
 ## 專案結構
 
 ```
@@ -86,7 +167,7 @@ src/
 
 ## 核心特色
 
-- **完全零外部依賴**：不使用 axios、got 等第三方 HTTP 套件，僅依賴 Node.js 18+ 內建 `fetch`
+- **完全零外部依賴**：不使用 axios、got 等第三方 HTTP 套件，僅依賴 Node.js 20+ 內建 `fetch`
 - **強型別優先**：所有 API 變數以 TypeScript 字面值型別定義，違法參數在編譯期就會報錯
 - **自動資料正規化**：平行陣列自動轉物件陣列，開發者永遠不需要手動對齊 index
 - **開放擴充架構**：實作 `WeatherAnalyzer` 介面即可注入自定義業務邏輯
@@ -102,7 +183,7 @@ src/
 | 類別 | 工具 |
 |---|---|
 | 語言 | TypeScript 5.7 |
-| 執行環境 | Node.js 18+ |
+| 執行環境 | Node.js 20+ |
 | 打包 | tsup（esbuild 驅動） |
 | 測試 | Vitest |
 | 程式碼風格 | Prettier + ESLint（flat config） |
