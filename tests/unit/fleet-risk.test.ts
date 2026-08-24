@@ -414,4 +414,39 @@ describe('createFleetRiskAnalyzer', () => {
       expect(result.fleetRisk[0]?.riskFactors).toEqual([])
     })
   })
+
+  describe('threshold overrides', () => {
+    it('should use default thresholds when no overrides are provided', () => {
+      const analyzer = createFleetRiskAnalyzer()
+      const data = makeWeatherResponse({
+        hourly: [{ time: new Date('2026-01-01T00:00:00Z'), wind_speed_10m: 51 }],
+      })
+      const result = analyzer.analyze(data)
+
+      expect(result.fleetRisk[0]?.riskScore).toBe(3)
+      expect(result.fleetRisk[0]?.riskFactors).toContain('Strong Wind')
+    })
+
+    it('should use overridden thresholds when provided', () => {
+      const analyzer = createFleetRiskAnalyzer({
+        strongWind: 60,
+      })
+      const data = makeWeatherResponse({
+        hourly: [{ time: new Date('2026-01-01T00:00:00Z'), wind_speed_10m: 51 }],
+      })
+      const result = analyzer.analyze(data)
+
+      expect(result.fleetRisk[0]?.riskScore).toBe(1)
+      expect(result.fleetRisk[0]?.riskFactors).toContain('Moderate Wind')
+
+      // Now test with a wind speed that exceeds the overridden threshold
+      const data2 = makeWeatherResponse({
+        hourly: [{ time: new Date('2026-01-01T00:00:00Z'), wind_speed_10m: 61 }],
+      })
+      const result2 = analyzer.analyze(data2)
+
+      expect(result2.fleetRisk[0]?.riskScore).toBe(3)
+      expect(result2.fleetRisk[0]?.riskFactors).toContain('Strong Wind')
+    })
+  })
 })
